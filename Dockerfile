@@ -8,7 +8,7 @@
 # Or mount a token file:
 #   docker run -v ~/.slack-mcp-tokens.json:/root/.slack-mcp-tokens.json slack-mcp-server
 
-FROM node:18-alpine
+FROM node:20-alpine
 
 # OCI Image Labels for registry discoverability
 LABEL maintainer="jtalk22"

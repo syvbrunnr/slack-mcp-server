@@ -1,11 +1,12 @@
 {
   "name": "@jtalk22/slack-mcp",
   "mcpName": "io.github.jtalk22/slack-mcp-server",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Full Slack access for Claude - DMs, channels, search. No OAuth. No admin approval. Just works.",
   "type": "module",
   "main": "src/server.js",
   "bin": {
+    "slack-mcp": "./src/cli.js",
     "slack-mcp-server": "./src/server.js",
     "slack-mcp-http": "./src/server-http.js",
     "slack-mcp-web": "./src/web-server.js",
@@ -88,7 +89,7 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.25.2",
+    "@modelcontextprotocol/sdk": "^1.27.0",
     "express": "^4.18.2"
   },
   "files": [

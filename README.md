@@ -98,6 +98,8 @@ Instead of authenticating as a bot, this server leverages your existing Chrome s
 
 ## Quick Start
 
+**Runtime:** Node.js 20+
+
 ### Option A: npm (Recommended)
 
 ```bash
@@ -288,7 +290,7 @@ npm run web
 
 ```
 ════════════════════════════════════════════════════════════
-  Slack Web API Server v1.2.0
+  Slack Web API Server v1.2.1
 ════════════════════════════════════════════════════════════
 
   Dashboard: http://localhost:3000/?key=smcp_xxxxxxxxxxxx

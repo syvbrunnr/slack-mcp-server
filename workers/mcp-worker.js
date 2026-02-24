@@ -165,17 +165,43 @@ const TOOLS = [
   }
 ];
 
+// Slack API methods that require form-encoded params instead of JSON.
+const FORM_ENCODED_METHODS = new Set([
+  "conversations.replies",
+  "search.messages",
+  "search.all",
+  "search.files",
+  "users.info",
+]);
+
 // Slack API wrapper
 async function slackApi(method, params, token, cookie) {
   const url = `https://slack.com/api/${method}`;
+  const useForm = FORM_ENCODED_METHODS.has(method);
+  const headers = {
+    "Authorization": `Bearer ${token}`,
+    "Cookie": `d=${cookie}`,
+  };
+
+  let body;
+  if (useForm) {
+    const safeParams = {};
+    for (const [key, value] of Object.entries(params || {})) {
+      safeParams[key] = (typeof value === "object" && value !== null)
+        ? JSON.stringify(value)
+        : String(value);
+    }
+    headers["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+    body = new URLSearchParams(safeParams).toString();
+  } else {
+    headers["Content-Type"] = "application/json; charset=utf-8";
+    body = JSON.stringify(params || {});
+  }
+
   const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Cookie': `d=${cookie}`,
-      'Content-Type': 'application/json; charset=utf-8'
-    },
-    body: JSON.stringify(params)
+    method: "POST",
+    headers,
+    body,
   });
   return response.json();
 }
@@ -298,7 +324,7 @@ async function handleMcpRequest(request, env, queryParams) {
         responses.push(jsonRpcResponse(id, {
           protocolVersion: "2024-11-05",
           capabilities: { tools: {}, prompts: {}, resources: {} },
-          serverInfo: { name: "slack-mcp-server", version: "1.2.0" }
+          serverInfo: { name: "slack-mcp-server", version: "1.2.1" }
         }));
         break;
 
@@ -377,7 +403,7 @@ export default {
     // Health check
     if (url.pathname === '/health') {
       return Response.json(
-        { status: 'ok', server: 'slack-mcp-server', version: '1.2.0' },
+        { status: 'ok', server: 'slack-mcp-server', version: '1.2.1' },
         { headers: corsHeaders }
       );
     }
@@ -387,7 +413,7 @@ export default {
       return Response.json({
         serverInfo: {
           name: "Slack MCP",
-          version: "1.2.0"
+          version: "1.2.1"
         },
         authentication: {
           required: false

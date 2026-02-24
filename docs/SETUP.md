@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 20+
 - Google Chrome (for token extraction)
 - macOS (for Keychain storage - other platforms use file storage only)
 

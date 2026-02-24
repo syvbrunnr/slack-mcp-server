@@ -16,7 +16,7 @@ import { loadTokens, saveTokens, extractFromChrome, isAutoRefreshAvailable, TOKE
 import { slackAPI } from "../lib/slack-client.js";
 
 const IS_MACOS = platform() === 'darwin';
-const VERSION = "1.2.0";
+const VERSION = "1.2.1";
 
 // ANSI colors
 const colors = {
@@ -69,24 +69,27 @@ async function pressEnterToContinue(rl) {
 }
 
 async function validateTokens(token, cookie) {
+  const hadOldToken = Object.prototype.hasOwnProperty.call(process.env, "SLACK_TOKEN");
+  const hadOldCookie = Object.prototype.hasOwnProperty.call(process.env, "SLACK_COOKIE");
+  const oldToken = process.env.SLACK_TOKEN;
+  const oldCookie = process.env.SLACK_COOKIE;
+
+  // Temporarily set env vars for validation
+  process.env.SLACK_TOKEN = token;
+  process.env.SLACK_COOKIE = cookie;
+
   try {
-    // Temporarily set env vars for validation
-    const oldToken = process.env.SLACK_TOKEN;
-    const oldCookie = process.env.SLACK_COOKIE;
-    process.env.SLACK_TOKEN = token;
-    process.env.SLACK_COOKIE = cookie;
-
     const result = await slackAPI("auth.test", {});
-
-    // Restore env vars
-    if (oldToken) process.env.SLACK_TOKEN = oldToken;
-    else delete process.env.SLACK_TOKEN;
-    if (oldCookie) process.env.SLACK_COOKIE = oldCookie;
-    else delete process.env.SLACK_COOKIE;
-
     return { valid: true, user: result.user, team: result.team };
   } catch (e) {
     return { valid: false, error: e.message };
+  } finally {
+    // Always restore prior process env state
+    if (hadOldToken) process.env.SLACK_TOKEN = oldToken;
+    else delete process.env.SLACK_TOKEN;
+
+    if (hadOldCookie) process.env.SLACK_COOKIE = oldCookie;
+    else delete process.env.SLACK_COOKIE;
   }
 }
 
@@ -175,7 +178,7 @@ async function runManualSetup(rl) {
     "  .teams)[0]].token",
   ], 55);
   print();
-  print("         Copy the token (starts with ${colors.cyan}xoxc-${colors.reset})");
+  print(`         Copy the token (starts with ${colors.cyan}xoxc-${colors.reset})`);
   print();
 
   const token = await question(rl, `${colors.bold}Paste your token:${colors.reset} `);
@@ -187,7 +190,7 @@ async function runManualSetup(rl) {
 
   print();
   print(`${colors.bold}Step 4:${colors.reset} Go to ${colors.cyan}Application${colors.reset} tab → ${colors.cyan}Cookies${colors.reset} → slack.com`);
-  print("         Find the '${colors.cyan}d${colors.reset}' cookie and copy its value");
+  print(`         Find the '${colors.cyan}d${colors.reset}' cookie and copy its value`);
   print();
 
   const cookie = await question(rl, `${colors.bold}Paste your cookie:${colors.reset} `);
