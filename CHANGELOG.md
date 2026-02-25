@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2026-02-25
+
+### Improved
+- Added concise issue/release follow-up templates and communication style guidance for faster post-publish bug handling.
+- Added free local-first proof surfaces: README 30-second proof, HN launch kit, docs index, and demo CTA alignment.
+- Added clean-room install verifier script (`scripts/verify-install-flow.js`) and CI coverage on Node 20.
+- Added `--doctor` CLI diagnostics with deterministic exit codes and next-step guidance.
+
+### Compatibility
+- No API or MCP tool schema changes.
+
 ## [1.2.2] - 2026-02-25
 
 ### Improved
@@ -172,6 +183,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-layer token persistence (env, file, keychain)
 - Auto-refresh from Chrome
 
+[1.2.3]: https://github.com/jtalk22/slack-mcp-server/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/jtalk22/slack-mcp-server/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/jtalk22/slack-mcp-server/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/jtalk22/slack-mcp-server/compare/v1.1.9...v1.2.0

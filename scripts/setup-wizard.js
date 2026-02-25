@@ -23,7 +23,7 @@ import {
 } from "../lib/token-store.js";
 
 const IS_MACOS = platform() === 'darwin';
-const VERSION = "1.2.2";
+const VERSION = "1.2.3";
 const MIN_NODE_MAJOR = 20;
 
 // ANSI colors
