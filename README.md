@@ -6,7 +6,7 @@
 
 <p align="center">
   <em>Give Claude the same Slack access you have.<br>
-  DMs, threads, history—no admin approval.</em>
+  DMs, threads, history—using your existing Slack session.</em>
 </p>
 
 <p align="center">
@@ -39,7 +39,7 @@
 
 ### Why This Exists
 
-I built this because I was working with someone to help me manage a complex workload, and we kept hitting walls. They needed context from my messages—"what did X say about Y?"—but Slack's API blocks access to DMs without admin approval.
+I built this because I was working with someone to help me manage a complex workload, and we kept hitting walls. They needed context from my messages—"what did X say about Y?"—and standard app/OAuth flows were too constrained for that workflow.
 
 Screenshotting messages is not a workflow.
 
@@ -100,6 +100,16 @@ Instead of authenticating as a bot, this server leverages your existing Chrome s
 
 **Runtime:** Node.js 20+
 
+### 2-Minute Verify
+
+```bash
+npx -y @jtalk22/slack-mcp --version
+npx -y @jtalk22/slack-mcp --setup
+npx -y @jtalk22/slack-mcp --status
+```
+
+If `--status` returns valid workspace/user info, your install path is working.
+
 ### Option A: npm (Recommended)
 
 ```bash
@@ -131,7 +141,7 @@ docker pull ghcr.io/jtalk22/slack-mcp-server:latest
 The interactive setup wizard handles token extraction and validation automatically:
 
 ```bash
-npx @jtalk22/slack-mcp --setup
+npx -y @jtalk22/slack-mcp --setup
 ```
 
 - **macOS**: Auto-extracts tokens from Chrome (have Slack open in a tab)
@@ -142,7 +152,7 @@ npx @jtalk22/slack-mcp --setup
 #### Check Token Status
 
 ```bash
-npx @jtalk22/slack-mcp --status
+npx -y @jtalk22/slack-mcp --status
 ```
 
 #### Alternative: Manual Token Scripts
@@ -283,7 +293,7 @@ If you're using claude.ai in a browser (which doesn't support MCP), you can use 
 
 ```bash
 npm run web
-# Or: npx @jtalk22/slack-mcp web
+# Or: npx -y @jtalk22/slack-mcp web
 ```
 
 **Magic Link:** The console prints a one-click URL with the API key embedded:
