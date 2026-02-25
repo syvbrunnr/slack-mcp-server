@@ -1,0 +1,77 @@
+name: Attribution Guardrail
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  attribution:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine commit range
+        id: commit_range
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            RANGE="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            RANGE="${{ github.event.before }}..${{ github.sha }}"
+          else
+            RANGE="origin/main..HEAD"
+          fi
+
+          echo "range=$RANGE" >> "$GITHUB_OUTPUT"
+          echo "Using range: $RANGE"
+
+      - name: Verify owner-only attribution
+        env:
+          EXPECTED_GIT_NAME: jtalk22
+          EXPECTED_GIT_EMAIL: james@revasser.nyc
+          SKIP_LOCAL_CONFIG_CHECK: "1"
+        run: |
+          bash scripts/check-owner-attribution.sh "${{ steps.commit_range.outputs.range }}"
+
+      - name: Validate release and issue templates (if changed)
+        shell: bash
+        run: |
+          set -euo pipefail
+          RANGE="${{ steps.commit_range.outputs.range }}"
+          changed="$(git diff --name-only "$RANGE" || true)"
+
+          if [[ -z "$changed" ]]; then
+            echo "No changed files found in range."
+            exit 0
+          fi
+
+          target_files="$(printf '%s\n' "$changed" | rg -N '(^\.github/RELEASE_NOTES_TEMPLATE\.md$|^\.github/ISSUE_REPLY_TEMPLATE\.md$|^docs/COMMUNICATION-STYLE\.md$|^CHANGELOG\.md$)' || true)"
+
+          if [[ -z "$target_files" ]]; then
+            echo "No communication template files changed."
+            exit 0
+          fi
+
+          disallowed='(?i)(co-authored-by|generated with|\bclaude\b|\bgpt\b|\bcopilot\b|\bgemini\b|\bai\b)'
+          found=0
+
+          while IFS= read -r file; do
+            [[ -n "$file" ]] || continue
+            echo "Scanning $file"
+            if rg -Nni "$disallowed" "$file"; then
+              found=1
+            fi
+          done <<< "$target_files"
+
+          if [[ "$found" -ne 0 ]]; then
+            echo "Disallowed attribution markers found in communication templates."
+            exit 1
+          fi

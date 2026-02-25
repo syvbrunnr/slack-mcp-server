@@ -17,6 +17,8 @@
     "http": "node src/server-http.js",
     "web": "node src/web-server.js",
     "setup": "node scripts/setup-wizard.js --setup",
+    "hooks:setup": "bash scripts/setup-git-hooks.sh",
+    "verify:owner-attribution": "bash scripts/check-owner-attribution.sh",
     "tokens:status": "node scripts/token-cli.js status",
     "tokens:refresh": "node scripts/token-cli.js refresh",
     "tokens:auto": "node scripts/token-cli.js auto",
