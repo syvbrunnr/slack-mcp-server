@@ -12,19 +12,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="@jtalk22">
   <title>Slack MCP Server - Claude Desktop Demo</title>
-  <meta name="description" content="See how Claude uses Slack MCP tools to access your workspace - DMs, channels, search, and more.">
+  <meta name="description" content="Session-based Slack access demo showing Claude workflows for DMs, channels, search, and threads.">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Slack MCP Server - Claude Desktop Demo">
-  <meta property="og:description" content="Interactive demo showing Claude Desktop using MCP tools to access Slack - search messages, read threads, send updates.">
+  <meta property="og:title" content="Slack MCP Server - Session Access Demo">
+  <meta property="og:description" content="Interactive demo showing Claude using session-based Slack MCP tools for search, threads, and messaging workflows.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://jtalk22.github.io/slack-mcp-server/public/demo-claude.html">
   <meta property="og:image" content="https://assets-worker.james-20a.workers.dev/projects/slack-mcp-server/demo-claude.gif">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Slack MCP Server - Claude Desktop Demo">
-  <meta name="twitter:description" content="Interactive demo showing Claude using MCP tools to access your Slack workspace.">
+  <meta name="twitter:title" content="Slack MCP Server - Session Access Demo">
+  <meta name="twitter:description" content="Interactive demo showing Claude using session-based Slack MCP tools for search, threads, and messaging workflows.">
   <meta name="twitter:image" content="https://assets-worker.james-20a.workers.dev/projects/slack-mcp-server/demo-claude.gif">
 
   <!-- Theme -->
@@ -123,6 +123,43 @@
     .page-header p {
       color: var(--text-secondary);
       font-size: 16px;
+    }
+    .cta-strip {
+      width: 100%;
+      max-width: 960px;
+      margin-bottom: 16px;
+      background: rgba(15, 52, 96, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+    .cta-strip .links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .cta-strip .links a {
+      color: #d8efff;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 999px;
+      padding: 4px 8px;
+    }
+    .cta-strip .links a:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .cta-strip .note {
+      color: rgba(255, 255, 255, 0.78);
+    }
+    .cta-strip .note a {
+      color: #9ee7ff;
+      text-decoration: underline;
     }
 
     .badge {
@@ -1111,10 +1148,20 @@
   </style>
 </head>
 <body>
+  <div class="cta-strip">
+    <div class="links">
+      <a href="https://www.npmjs.com/package/@jtalk22/slack-mcp" target="_blank" rel="noopener noreferrer">Install</a>
+      <a href="https://github.com/jtalk22/slack-mcp-server/blob/main/docs/API.md" target="_blank" rel="noopener noreferrer">API Docs</a>
+      <a href="https://github.com/jtalk22/slack-mcp-server/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Changelog</a>
+    </div>
+    <div class="note">
+      Team rollout? Review <a href="https://github.com/jtalk22/slack-mcp-server/blob/main/docs/DEPLOYMENT-MODES.md" target="_blank" rel="noopener noreferrer">Deployment Modes</a>.
+    </div>
+  </div>
   <header class="page-header">
     <h1>
       <span>Slack MCP Server</span>
-      <span class="badge">🔧 MCP Demo v1.2</span>
+      <span class="badge">🔧 MCP Demo v1.2.1</span>
     </h1>
     <p>See how Claude uses MCP tools to access your Slack workspace</p>
   </header>
@@ -1186,7 +1233,7 @@
       <div class="title-logo">💬</div>
       <h1>Slack MCP Server</h1>
       <p class="title-tagline">Full Slack access for Claude Desktop</p>
-      <p class="title-version">v1.2 • @jtalk22</p>
+      <p class="title-version">v1.2.1 • @jtalk22</p>
     </div>
 
     <!-- Scenario Caption Overlay -->
@@ -1196,9 +1243,9 @@
     <div class="closing-card" id="closingCard">
       <div class="closing-check">✅</div>
       <h2>Demo Complete</h2>
-      <p class="closing-cta">Full Slack access. No OAuth. No admin approval.</p>
+      <p class="closing-cta">Session-based Slack access aligned to your existing workspace permissions.</p>
       <div class="closing-links">
-        <code>npm install -g @jtalk22/slack-mcp</code>
+        <code>npx -y @jtalk22/slack-mcp --setup</code>
       </div>
       <p class="closing-github">github.com/jtalk22/slack-mcp-server</p>
       <span class="easter-egg">ê</span>

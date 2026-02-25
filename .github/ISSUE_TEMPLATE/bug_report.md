@@ -23,8 +23,11 @@ What actually happened.
 ## Environment
 - OS: [e.g., macOS 14.0, Windows 11, Ubuntu 22.04]
 - Node.js version: [e.g., 20.10.0]
-- Claude client: [Claude Desktop / Claude Code / claude.ai Web UI]
-- slack-mcp-server version: [e.g., 1.0.0]
+- Claude client: [Claude Desktop / Claude Code / claude.ai]
+- slack-mcp-server version: [e.g., 1.2.1]
+- Deployment mode: [stdio / web / http / worker-smithery]
+- Team size impacted: [1 / 2-5 / 6-20 / 20+]
+- Urgency: [low / medium / high]
 
 ## Logs/Error Messages
 ```
@@ -34,6 +37,10 @@ Paste any relevant error messages or logs here
 ## Token Status
 - [ ] I have verified my tokens are valid using `npm run tokens:status`
 - [ ] Tokens were refreshed within the last week
+
+## Support Expectation
+- Is this blocking a team rollout? [yes/no]
+- Desired response window: [best effort / within 2 business days / urgent]
 
 ## Additional Context
 Add any other context about the problem here.

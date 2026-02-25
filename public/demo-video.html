@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Slack MCP Server Demo</title>
+  <meta name="description" content="Video demo of session-based Slack access for Claude with DMs, channels, search, and threads.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Slack MCP Server - Session Access Demo">
+  <meta property="og:description" content="Video walkthrough of session-based Slack workflows in Claude.">
+  <meta property="og:url" content="https://jtalk22.github.io/slack-mcp-server/public/demo-video.html">
+  <meta property="og:image" content="https://raw.githubusercontent.com/jtalk22/slack-mcp-server/main/docs/images/demo-poster.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Slack MCP Server - Session Access Demo">
+  <meta name="twitter:description" content="Video walkthrough of session-based Slack workflows in Claude.">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/jtalk22/slack-mcp-server/main/docs/images/demo-poster.png">
   <style>
     * {
       margin: 0;
@@ -36,6 +46,41 @@
       text-align: center;
       margin-bottom: 1.5rem;
       font-size: 1rem;
+    }
+    .cta-strip {
+      margin: 0 auto 1rem;
+      background: rgba(15, 52, 96, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 0.8125rem;
+    }
+    .cta-strip .links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .cta-strip .links a {
+      color: #d8efff;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 999px;
+      padding: 4px 8px;
+    }
+    .cta-strip .links a:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .cta-strip .note {
+      color: rgba(255, 255, 255, 0.82);
+    }
+    .cta-strip .note a {
+      color: #9ee7ff;
+      text-decoration: underline;
     }
     .video-wrapper {
       position: relative;
@@ -98,6 +143,16 @@
   <div class="container">
     <h1>Slack MCP Server</h1>
     <p class="subtitle">Full workspace access via local session mirroring</p>
+    <div class="cta-strip">
+      <div class="links">
+        <a href="https://www.npmjs.com/package/@jtalk22/slack-mcp" target="_blank" rel="noopener noreferrer">Install</a>
+        <a href="https://github.com/jtalk22/slack-mcp-server/blob/main/docs/API.md" target="_blank" rel="noopener noreferrer">API Docs</a>
+        <a href="https://github.com/jtalk22/slack-mcp-server/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Changelog</a>
+      </div>
+      <div class="note">
+        Team rollout? Review <a href="https://github.com/jtalk22/slack-mcp-server/blob/main/docs/DEPLOYMENT-MODES.md" target="_blank" rel="noopener noreferrer">Deployment Modes</a>.
+      </div>
+    </div>
 
     <div class="video-wrapper">
       <video id="demo" poster="../docs/images/demo-poster.png" playsinline>

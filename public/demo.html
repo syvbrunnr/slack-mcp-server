@@ -8,18 +8,18 @@
   <!-- Open Graph / Social Sharing -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://jtalk22.github.io/slack-mcp-server/public/demo.html">
-  <meta property="og:title" content="Slack MCP Server - Direct Access for Claude">
-  <meta property="og:description" content="Give Claude full access to DMs and Channels without OAuth. Try the interactive simulator.">
+  <meta property="og:title" content="Slack MCP Server - Session Access Demo">
+  <meta property="og:description" content="Interactive demo for session-based Slack access in Claude: DMs, channels, search, and threads.">
   <meta property="og:image" content="https://raw.githubusercontent.com/jtalk22/slack-mcp-server/main/docs/images/demo-main.png">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Slack MCP Server - Direct Access for Claude">
-  <meta name="twitter:description" content="Give Claude full access to DMs and Channels without OAuth. Try the interactive simulator.">
+  <meta name="twitter:title" content="Slack MCP Server - Session Access Demo">
+  <meta name="twitter:description" content="Interactive demo for session-based Slack access in Claude: DMs, channels, search, and threads.">
   <meta name="twitter:image" content="https://raw.githubusercontent.com/jtalk22/slack-mcp-server/main/docs/images/demo-main.png">
 
   <!-- SEO -->
-  <meta name="description" content="Full Slack access for Claude - DMs, channels, search. No OAuth. No admin approval. Interactive demo simulator.">
+  <meta name="description" content="Session-based Slack access for Claude. Interactive demo for DMs, channels, search, and thread workflows.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -74,12 +74,45 @@
       color: white;
       text-decoration: underline;
     }
+    .cta-strip {
+      background: rgba(15, 52, 96, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+    .cta-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .cta-links a {
+      color: #d8efff;
+      text-decoration: none;
+      padding: 4px 8px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 999px;
+    }
+    .cta-links a:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .cta-note {
+      color: rgba(255, 255, 255, 0.75);
+    }
+    .cta-note a {
+      color: #9ee7ff;
+      text-decoration: underline;
+    }
 
     /* Main Layout */
     .split-container {
       display: grid;
       grid-template-columns: 420px 1fr;
-      height: calc(100vh - 44px);
+      height: calc(100vh - 88px);
       overflow: hidden;
     }
 
@@ -599,6 +632,16 @@
   <div class="preview-banner">
     STATIC PREVIEW - No real data. Run <code>npm run web</code> for live dashboard.
     <a href="https://github.com/jtalk22/slack-mcp-server">View on GitHub</a>
+  </div>
+  <div class="cta-strip">
+    <div class="cta-links">
+      <a href="https://www.npmjs.com/package/@jtalk22/slack-mcp" target="_blank" rel="noopener noreferrer">Install</a>
+      <a href="https://github.com/jtalk22/slack-mcp-server/blob/main/docs/API.md" target="_blank" rel="noopener noreferrer">API Docs</a>
+      <a href="https://github.com/jtalk22/slack-mcp-server/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Changelog</a>
+    </div>
+    <div class="cta-note">
+      Team rollout? Review <a href="https://github.com/jtalk22/slack-mcp-server/blob/main/docs/DEPLOYMENT-MODES.md" target="_blank" rel="noopener noreferrer">Deployment Modes</a>.
+    </div>
   </div>
 
   <div class="split-container">
