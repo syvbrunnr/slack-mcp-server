@@ -106,13 +106,17 @@ Instead of authenticating as a bot, this server leverages your existing Chrome s
 
 ```bash
 npx -y @jtalk22/slack-mcp --version
-npx -y @jtalk22/slack-mcp --status
+npx -y @jtalk22/slack-mcp --doctor
 npx -y @jtalk22/slack-mcp --setup
 ```
 
 Expected:
 - `--version` prints `slack-mcp-server v1.2.x`
-- `--status` returns either valid workspace info or a clear "No tokens found" message
+- `--doctor` returns one clear next action with exit code:
+  - `0` ready
+  - `1` missing credentials
+  - `2` invalid/expired credentials
+  - `3` connectivity/runtime issue
 - `--setup` launches the interactive wizard
 
 Proof script for launch threads: [docs/HN-LAUNCH.md](docs/HN-LAUNCH.md)
@@ -356,7 +360,7 @@ If you're evaluating team rollout, start with [Deployment Modes](docs/DEPLOYMENT
 1. Run:
    ```bash
    npx -y @jtalk22/slack-mcp --version
-   npx -y @jtalk22/slack-mcp --status
+   npx -y @jtalk22/slack-mcp --doctor
    ```
 2. If setup fails, run:
    ```bash

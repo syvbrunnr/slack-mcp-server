@@ -13,12 +13,16 @@ tmpdir="$(mktemp -d)"
 cd "$tmpdir"
 npx -y @jtalk22/slack-mcp --version
 npx -y @jtalk22/slack-mcp --help
-npx -y @jtalk22/slack-mcp --status
+npx -y @jtalk22/slack-mcp --doctor
 ```
 
 Expected:
 - `--version` and `--help` exit `0`
-- `--status` exits non-zero when credentials are not configured
+- `--doctor` exits with one of:
+  - `0` ready
+  - `1` missing credentials
+  - `2` invalid/expired credentials
+  - `3` connectivity/runtime issue
 
 If `--version` fails here, the issue is install/runtime path, not Slack credentials.
 
@@ -76,6 +80,9 @@ slack_refresh_tokens
 
 # Option 2: Package setup wizard
 npx -y @jtalk22/slack-mcp --setup
+
+# Option 3: Doctor diagnostics
+npx -y @jtalk22/slack-mcp --doctor
 
 # Option 3: Repo CLI
 npm run tokens:auto

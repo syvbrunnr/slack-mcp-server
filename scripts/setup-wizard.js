@@ -12,11 +12,19 @@
 
 import { platform } from "os";
 import * as readline from "readline";
-import { loadTokens, saveTokens, extractFromChrome, isAutoRefreshAvailable, TOKEN_FILE } from "../lib/token-store.js";
-import { slackAPI } from "../lib/slack-client.js";
+import {
+  loadTokens,
+  saveTokens,
+  extractFromChrome,
+  isAutoRefreshAvailable,
+  TOKEN_FILE,
+  getFromFile,
+  getFromKeychain,
+} from "../lib/token-store.js";
 
 const IS_MACOS = platform() === 'darwin';
 const VERSION = "1.2.2";
+const MIN_NODE_MAJOR = 20;
 
 // ANSI colors
 const colors = {
@@ -69,27 +77,25 @@ async function pressEnterToContinue(rl) {
 }
 
 async function validateTokens(token, cookie) {
-  const hadOldToken = Object.prototype.hasOwnProperty.call(process.env, "SLACK_TOKEN");
-  const hadOldCookie = Object.prototype.hasOwnProperty.call(process.env, "SLACK_COOKIE");
-  const oldToken = process.env.SLACK_TOKEN;
-  const oldCookie = process.env.SLACK_COOKIE;
-
-  // Temporarily set env vars for validation
-  process.env.SLACK_TOKEN = token;
-  process.env.SLACK_COOKIE = cookie;
-
   try {
-    const result = await slackAPI("auth.test", {});
-    return { valid: true, user: result.user, team: result.team };
+    const response = await fetch("https://slack.com/api/auth.test", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Cookie": `d=${cookie}`,
+        "Content-Type": "application/json; charset=utf-8",
+      },
+      body: JSON.stringify({}),
+    });
+
+    const result = await response.json();
+    if (!result.ok) {
+      return { valid: false, error: result.error || "auth.test_failed" };
+    }
+
+    return { valid: true, user: result.user, team: result.team, userId: result.user_id };
   } catch (e) {
     return { valid: false, error: e.message };
-  } finally {
-    // Always restore prior process env state
-    if (hadOldToken) process.env.SLACK_TOKEN = oldToken;
-    else delete process.env.SLACK_TOKEN;
-
-    if (hadOldCookie) process.env.SLACK_COOKIE = oldCookie;
-    else delete process.env.SLACK_COOKIE;
   }
 }
 
@@ -243,23 +249,118 @@ async function showStatus() {
   }
   print();
 
-  try {
-    // Need to set env vars for slackAPI to work
-    process.env.SLACK_TOKEN = creds.token;
-    process.env.SLACK_COOKIE = creds.cookie;
-
-    const result = await slackAPI("auth.test", {});
-    success("Status: VALID");
-    print(`User: ${result.user}`);
-    print(`Team: ${result.team}`);
-    print(`User ID: ${result.user_id}`);
-  } catch (e) {
+  const result = await validateTokens(creds.token, creds.cookie);
+  if (!result.valid) {
     error("Status: INVALID");
-    print(`Error: ${e.message}`);
+    print(`Error: ${result.error}`);
     print();
     print("Run setup wizard to refresh: npx -y @jtalk22/slack-mcp --setup");
     process.exit(1);
   }
+
+  success("Status: VALID");
+  print(`User: ${result.user}`);
+  print(`Team: ${result.team}`);
+  print(`User ID: ${result.userId}`);
+}
+
+function getDoctorCredentials() {
+  if (process.env.SLACK_TOKEN && process.env.SLACK_COOKIE) {
+    return { token: process.env.SLACK_TOKEN, cookie: process.env.SLACK_COOKIE, source: "environment" };
+  }
+
+  const fileTokens = getFromFile();
+  if (fileTokens?.token && fileTokens?.cookie) {
+    return {
+      token: fileTokens.token,
+      cookie: fileTokens.cookie,
+      source: "file",
+      path: TOKEN_FILE,
+      updatedAt: fileTokens.updatedAt,
+    };
+  }
+
+  if (IS_MACOS) {
+    const keychainToken = getFromKeychain("token");
+    const keychainCookie = getFromKeychain("cookie");
+    if (keychainToken && keychainCookie) {
+      return { token: keychainToken, cookie: keychainCookie, source: "keychain" };
+    }
+  }
+
+  return null;
+}
+
+function classifyAuthError(rawError) {
+  const msg = String(rawError || "").toLowerCase();
+  if (
+    msg.includes("invalid_auth") ||
+    msg.includes("token_expired") ||
+    msg.includes("not_authed") ||
+    msg.includes("account_inactive")
+  ) {
+    return 2;
+  }
+  return 3;
+}
+
+function parseNodeMajor() {
+  return Number.parseInt(process.versions.node.split(".")[0], 10);
+}
+
+async function runDoctor() {
+  print(`${colors.bold}slack-mcp-server doctor${colors.reset}`);
+  print();
+
+  const nodeMajor = parseNodeMajor();
+  if (Number.isNaN(nodeMajor) || nodeMajor < MIN_NODE_MAJOR) {
+    error(`Node.js ${process.versions.node} detected (requires Node ${MIN_NODE_MAJOR}+)`);
+    print();
+    print("Next action:");
+    print(`  npx -y @jtalk22/slack-mcp --doctor  # rerun after upgrading Node ${MIN_NODE_MAJOR}+`);
+    process.exit(3);
+  }
+  success(`Node.js ${process.versions.node} (supported)`);
+
+  const creds = getDoctorCredentials();
+  if (!creds) {
+    error("Credentials: not found");
+    print();
+    print("Next action:");
+    print("  npx -y @jtalk22/slack-mcp --setup");
+    process.exit(1);
+  }
+
+  success(`Credentials loaded from: ${creds.source}`);
+  if (creds.path) {
+    print(`Path: ${creds.path}`);
+  }
+  if (creds.updatedAt) {
+    print(`Last updated: ${creds.updatedAt}`);
+  }
+
+  print();
+  print("Validating Slack auth...");
+  const validation = await validateTokens(creds.token, creds.cookie);
+  if (!validation.valid) {
+    const exitCode = classifyAuthError(validation.error);
+    error(`Slack auth failed: ${validation.error}`);
+    print();
+    print("Next action:");
+    if (exitCode === 2) {
+      print("  npx -y @jtalk22/slack-mcp --setup");
+    } else {
+      print("  Check network connectivity and retry:");
+      print("  npx -y @jtalk22/slack-mcp --doctor");
+    }
+    process.exit(exitCode);
+  }
+
+  success(`Slack auth valid for ${validation.user} @ ${validation.team}`);
+  print();
+  print("Ready. Next command:");
+  print("  npx -y @jtalk22/slack-mcp");
+  process.exit(0);
 }
 
 async function showHelp() {
@@ -271,6 +372,7 @@ async function showHelp() {
   print("  npx -y @jtalk22/slack-mcp             Start MCP server (stdio)");
   print("  npx -y @jtalk22/slack-mcp --setup     Interactive token setup wizard");
   print("  npx -y @jtalk22/slack-mcp --status    Check token health");
+  print("  npx -y @jtalk22/slack-mcp --doctor    Run runtime and auth diagnostics");
   print("  npx -y @jtalk22/slack-mcp --version   Print version");
   print("  npx -y @jtalk22/slack-mcp --help      Show this help");
   print();
@@ -295,6 +397,10 @@ async function main() {
     case '--status':
     case 'status':
       await showStatus();
+      return;
+    case '--doctor':
+    case 'doctor':
+      await runDoctor();
       return;
     case '--version':
     case '-v':

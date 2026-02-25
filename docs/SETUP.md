@@ -30,12 +30,16 @@ tmpdir="$(mktemp -d)"
 cd "$tmpdir"
 npx -y @jtalk22/slack-mcp --version
 npx -y @jtalk22/slack-mcp --help
-npx -y @jtalk22/slack-mcp --status
+npx -y @jtalk22/slack-mcp --doctor
 ```
 
 Expected:
 - `--version` and `--help` succeed.
-- `--status` returns non-zero until credentials are configured.
+- `--doctor` exits with one clear status:
+  - `0` ready
+  - `1` missing credentials
+  - `2` invalid/expired credentials
+  - `3` connectivity/runtime issue
 
 ### 3. Get Slack Tokens
 
@@ -134,11 +138,11 @@ You should see your username and team name.
 
 ### "No credentials found"
 
-Run `npx -y @jtalk22/slack-mcp --setup` with Slack open in Chrome, or `npm run tokens:refresh` to enter manually.
+Run `npx -y @jtalk22/slack-mcp --doctor` to confirm diagnostic code, then `npx -y @jtalk22/slack-mcp --setup` with Slack open in Chrome.
 
 ### "invalid_auth" Error
 
-Tokens have expired. Open Slack in Chrome and use `slack_refresh_tokens` in Claude Code.
+Tokens have expired. Run `npx -y @jtalk22/slack-mcp --doctor` and follow the suggested next action.
 
 ### MCP Server Not Loading
 

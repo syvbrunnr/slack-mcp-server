@@ -20,6 +20,7 @@ const firstArg = args[0];
 const WIZARD_ARGS = new Set([
   "--setup", "setup",
   "--status", "status",
+  "--doctor", "doctor",
   "--version", "-v",
   "--help", "-h", "help",
 ]);
