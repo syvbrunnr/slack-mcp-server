@@ -1,17 +1,28 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.jtalk22/slack-mcp-server",
+  "title": "Slack MCP Server",
   "description": "Session-based Slack access for Claude—DMs, channels, search, and threads—local-first with your existing Slack session.",
+  "websiteUrl": "https://jtalk22.github.io/slack-mcp-server/public/demo.html",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/jtalk22/slack-mcp-server/main/docs/assets/icon-512.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "512x512"
+      ]
+    }
+  ],
   "repository": {
     "url": "https://github.com/jtalk22/slack-mcp-server",
     "source": "github"
   },
-  "version": "1.2.4",
+  "version": "2.0.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@jtalk22/slack-mcp",
-      "version": "1.2.4",
+      "version": "2.0.0",
       "transport": {
         "type": "stdio"
       },

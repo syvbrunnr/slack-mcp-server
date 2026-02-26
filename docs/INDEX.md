@@ -19,9 +19,15 @@ Start here for setup, compatibility checks, operations, and support.
 ## Launch and Communication
 
 - [HN Launch Kit](HN-LAUNCH.md)
+- [Launch Copy (v2.0.0)](LAUNCH-COPY-v2.0.0.md)
+- [Launch Ops Runbook](LAUNCH-OPS.md)
+- [Capability Matrix](LAUNCH-MATRIX.md)
+- [Install Proof Block](INSTALL-PROOF.md)
 - [Communication Style](COMMUNICATION-STYLE.md)
 - [Release Health Guide](RELEASE-HEALTH.md)
 - [Latest Release Health Snapshot](release-health/latest.md)
+- [Version Parity Report](release-health/version-parity.md)
+- [Launch Log Template](release-health/launch-log-template.md)
 - [Changelog](../CHANGELOG.md)
 
 ## Issue Intake

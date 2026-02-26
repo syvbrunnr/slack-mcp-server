@@ -1,28 +1,29 @@
-# HN Launch Kit
+# HN Launch Kit (v2.0.0)
 
-Use this file as copy/paste launch material with minimal edits.
+Use this file for Show HN posting and first-comment follow-up.
 
 ## Title Options
 
-- `Show HN: Slack MCP Server (session-based Slack access for Claude)`
-- `Show HN: Slack MCP Server (local-first Slack context for Claude)`
-- `Show HN: Slack MCP Server (Slack MCP for local and hosted runtimes)`
+- `Show HN: Slack MCP Server v2.0.0 (deterministic Slack MCP diagnostics)`
+- `Show HN: Slack MCP Server v2.0.0 (session-based Slack access, stable contracts)`
+- `Show HN: Slack MCP Server v2.0.0 (local-first Slack context for Claude)`
 
 ## Launch Post Template
 
 ```md
-Built a session-based Slack MCP server so Claude can use the same access already available in your Slack web session.
+Released `@jtalk22/slack-mcp@2.0.0` today.
 
-Current scope:
-- DM/channel/thread reads
-- workspace search
-- message sends and user lookups
-- local web mode when MCP is unavailable
+This release focuses on install reliability and deterministic diagnostics:
+- read-only `--status` behavior enforced in install-path verification
+- deterministic `--doctor` exits (`0/1/2/3`)
+- structured MCP/web error payloads for triage consistency
+- token health handles missing timestamp as unknown age, not false critical
+- no MCP tool renames or removals
 
 Verify:
 - `npx -y @jtalk22/slack-mcp --version`
+- `npx -y @jtalk22/slack-mcp --doctor`
 - `npx -y @jtalk22/slack-mcp --status`
-- `npx -y @jtalk22/slack-mcp --setup`
 
 Repo: https://github.com/jtalk22/slack-mcp-server
 npm: https://www.npmjs.com/package/@jtalk22/slack-mcp
@@ -31,33 +32,30 @@ npm: https://www.npmjs.com/package/@jtalk22/slack-mcp
 ## First Comment Draft
 
 ```md
-Notes up front:
-- Local-first usage is fully supported.
-- Tokens are Slack session credentials and are stored locally by default.
-- macOS supports automatic Chrome extraction; Linux/Windows use guided manual setup.
-- Current docs include deployment modes, support boundaries, and troubleshooting.
+Quick notes:
+- Default path is local-first (`stdio`) and remains fully supported.
+- `--status` is read-only by design in this release.
+- `--doctor` has deterministic exit codes for automation and triage.
+- If registry pages lag, metadata is propagating; npm and GitHub release are authoritative first.
 
-If install fails, include OS, Node version, runtime mode (`stdio|web|http|worker`), and exact error output.
+If anything fails, include OS, Node version, runtime mode (`stdio|web|http|worker`), and exact output.
 ```
 
-## FAQ
+## FAQ Macro
 
-### Is this using Slack app OAuth scopes?
-No. It uses existing signed-in session permissions.
-
-### What about token expiry?
-Session tokens expire. `--setup` refreshes credentials, and macOS supports automatic extraction from Chrome.
+### Why session-based instead of OAuth app scopes?
+Session mirroring provides the same access visible in the signed-in Slack web session.
 
 ### Is hosted deployment required?
-No. The default path is local/self-hosted first. Deployment docs describe hosted tradeoffs.
+No. Local operator path is primary. Hosted paths are optional.
 
-### Is this suitable for production teams?
-Treat as operator-managed infrastructure and validate against your own security and compliance requirements.
+### Are tool contracts changed in v2.0.0?
+No. This release keeps existing MCP tool names.
 
-## Install Check Block
-
+### What should I run first?
+Use:
 ```bash
 npx -y @jtalk22/slack-mcp --version
+npx -y @jtalk22/slack-mcp --doctor
 npx -y @jtalk22/slack-mcp --status
-npx -y @jtalk22/slack-mcp --setup
 ```

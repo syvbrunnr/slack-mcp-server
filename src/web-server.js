@@ -5,7 +5,7 @@
  * Exposes Slack MCP tools as REST endpoints for browser access.
  * Run alongside or instead of the MCP server for web-based access.
  *
- * @version 1.2.4
+ * @version 2.0.0
  */
 
 import express from "express";
@@ -95,9 +95,25 @@ function authenticate(req, res, next) {
   const providedKey = authHeader?.replace("Bearer ", "");
 
   if (providedKey !== API_KEY) {
-    return res.status(401).json({ error: "Invalid API key" });
+    return res.status(401).json({
+      status: "error",
+      code: "unauthorized",
+      message: "Invalid API key",
+      next_action: "Provide Authorization: Bearer <api-key>."
+    });
   }
   next();
+}
+
+function sendStructuredError(res, statusCode, code, message, nextAction = null, details = null) {
+  const payload = {
+    status: "error",
+    code,
+    message,
+    next_action: nextAction,
+  };
+  if (details) payload.details = details;
+  return res.status(statusCode).json(payload);
 }
 
 // Helper to extract response content
@@ -116,8 +132,10 @@ function extractContent(result) {
 app.get("/", (req, res) => {
   res.json({
     name: "Slack Web API Server",
-    version: "1.2.4",
-    status: "running",
+    version: "2.0.0",
+    status: "ok",
+    code: "ok",
+    message: "Web API server is running.",
     endpoints: [
       "GET  /health",
       "POST /refresh",
@@ -140,7 +158,7 @@ app.get("/token-status", authenticate, async (req, res) => {
     const result = await handleTokenStatus();
     res.json(extractContent(result));
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    sendStructuredError(res, 500, "token_status_failed", String(e?.message || e));
   }
 });
 
@@ -148,9 +166,13 @@ app.get("/token-status", authenticate, async (req, res) => {
 app.get("/health", authenticate, async (req, res) => {
   try {
     const result = await handleHealthCheck();
-    res.json(extractContent(result));
+    const payload = extractContent(result);
+    if (result.isError) {
+      return res.status(400).json(payload);
+    }
+    res.json(payload);
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    sendStructuredError(res, 500, "health_check_failed", String(e?.message || e));
   }
 });
 
@@ -158,9 +180,13 @@ app.get("/health", authenticate, async (req, res) => {
 app.post("/refresh", authenticate, async (req, res) => {
   try {
     const result = await handleRefreshTokens();
-    res.json(extractContent(result));
+    const payload = extractContent(result);
+    if (result.isError) {
+      return res.status(400).json(payload);
+    }
+    res.json(payload);
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    sendStructuredError(res, 500, "refresh_failed", String(e?.message || e));
   }
 });
 
@@ -173,7 +199,7 @@ app.get("/conversations", authenticate, async (req, res) => {
     });
     res.json(extractContent(result));
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    sendStructuredError(res, 500, "list_conversations_failed", String(e?.message || e));
   }
 });
 
@@ -189,7 +215,7 @@ app.get("/conversations/:id/history", authenticate, async (req, res) => {
     });
     res.json(extractContent(result));
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    sendStructuredError(res, 500, "history_failed", String(e?.message || e));
   }
 });
 
@@ -206,7 +232,7 @@ app.get("/conversations/:id/full", authenticate, async (req, res) => {
     });
     res.json(extractContent(result));
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    sendStructuredError(res, 500, "full_export_failed", String(e?.message || e));
   }
 });
 
@@ -219,7 +245,7 @@ app.get("/conversations/:id/thread/:ts", authenticate, async (req, res) => {
     });
     res.json(extractContent(result));
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    sendStructuredError(res, 500, "thread_fetch_failed", String(e?.message || e));
   }
 });
 
@@ -227,7 +253,13 @@ app.get("/conversations/:id/thread/:ts", authenticate, async (req, res) => {
 app.get("/search", authenticate, async (req, res) => {
   try {
     if (!req.query.q) {
-      return res.status(400).json({ error: "Query parameter 'q' is required" });
+      return sendStructuredError(
+        res,
+        400,
+        "invalid_request",
+        "Query parameter 'q' is required",
+        "Set the q query string and retry."
+      );
     }
     const result = await handleSearchMessages({
       query: req.query.q,
@@ -235,7 +267,7 @@ app.get("/search", authenticate, async (req, res) => {
     });
     res.json(extractContent(result));
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    sendStructuredError(res, 500, "search_failed", String(e?.message || e));
   }
 });
 
@@ -243,7 +275,13 @@ app.get("/search", authenticate, async (req, res) => {
 app.post("/messages", authenticate, async (req, res) => {
   try {
     if (!req.body.channel_id || !req.body.text) {
-      return res.status(400).json({ error: "channel_id and text are required" });
+      return sendStructuredError(
+        res,
+        400,
+        "invalid_request",
+        "channel_id and text are required",
+        "Include channel_id and text in request JSON."
+      );
     }
     const result = await handleSendMessage({
       channel_id: req.body.channel_id,
@@ -252,7 +290,7 @@ app.post("/messages", authenticate, async (req, res) => {
     });
     res.json(extractContent(result));
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    sendStructuredError(res, 500, "send_message_failed", String(e?.message || e));
   }
 });
 
@@ -264,7 +302,7 @@ app.get("/users", authenticate, async (req, res) => {
     });
     res.json(extractContent(result));
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    sendStructuredError(res, 500, "list_users_failed", String(e?.message || e));
   }
 });
 
@@ -276,7 +314,7 @@ app.get("/users/:id", authenticate, async (req, res) => {
     });
     res.json(extractContent(result));
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    sendStructuredError(res, 500, "user_info_failed", String(e?.message || e));
   }
 });
 
@@ -295,7 +333,7 @@ async function main() {
   app.listen(PORT, '127.0.0.1', () => {
     // Print to stderr to keep logs clean (stdout reserved for JSON in some setups)
     console.error(`\n${"═".repeat(60)}`);
-    console.error(`  Slack Web API Server v1.2.4`);
+    console.error(`  Slack Web API Server v2.0.0`);
     console.error(`${"═".repeat(60)}`);
     console.error(`\n  Dashboard: http://localhost:${PORT}/?key=${API_KEY}`);
     console.error(`\n  API Key:   ${API_KEY}`);

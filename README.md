@@ -36,6 +36,10 @@
 
 ---
 
+> **Release:** `v2.0.0` is live with deterministic diagnostics and no MCP tool renames/removals.  
+> Release notes: [.github/v2.0.0-release-notes.md](.github/v2.0.0-release-notes.md)  
+> Install proof: [docs/INSTALL-PROOF.md](docs/INSTALL-PROOF.md)
+
 > Free local-first path: install with `npx -y @jtalk22/slack-mcp`, run on your own machine, and keep full control of session tokens.
 
 ### Why This Exists
@@ -110,7 +114,7 @@ npx -y @jtalk22/slack-mcp --setup
 ```
 
 Expected:
-- `--version` prints `slack-mcp-server v1.2.x`
+- `--version` prints `slack-mcp-server v2.0.x`
 - `--doctor` returns one clear next action with exit code:
   - `0` ready
   - `1` missing credentials
@@ -335,7 +339,7 @@ npm run web
 
 ```
 ════════════════════════════════════════════════════════════
-  Slack Web API Server v1.2.4
+  Slack Web API Server v2.0.0
 ════════════════════════════════════════════════════════════
 
   Dashboard: http://localhost:3000/?key=smcp_xxxxxxxxxxxx

@@ -324,7 +324,7 @@ async function handleMcpRequest(request, env, queryParams) {
         responses.push(jsonRpcResponse(id, {
           protocolVersion: "2024-11-05",
           capabilities: { tools: {}, prompts: {}, resources: {} },
-          serverInfo: { name: "slack-mcp-server", version: "1.2.4" }
+          serverInfo: { name: "slack-mcp-server", version: "2.0.0" }
         }));
         break;
 
@@ -403,7 +403,7 @@ export default {
     // Health check
     if (url.pathname === '/health') {
       return Response.json(
-        { status: 'ok', server: 'slack-mcp-server', version: '1.2.4' },
+        { status: 'ok', server: 'slack-mcp-server', version: '2.0.0' },
         { headers: corsHeaders }
       );
     }
@@ -413,7 +413,7 @@ export default {
       return Response.json({
         serverInfo: {
           name: "Slack MCP",
-          version: "1.2.4"
+          version: "2.0.0"
         },
         authentication: {
           required: false

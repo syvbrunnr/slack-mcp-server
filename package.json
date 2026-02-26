@@ -1,16 +1,16 @@
 {
   "name": "@jtalk22/slack-mcp",
   "mcpName": "io.github.jtalk22/slack-mcp-server",
-  "version": "1.2.4",
+  "version": "2.0.0",
   "description": "Session-based Slack access for Claude - DMs, channels, search, and threads. Local-first with your existing Slack session.",
   "type": "module",
   "main": "src/server.js",
   "bin": {
-    "slack-mcp": "./src/cli.js",
-    "slack-mcp-server": "./src/server.js",
-    "slack-mcp-http": "./src/server-http.js",
-    "slack-mcp-web": "./src/web-server.js",
-    "slack-mcp-setup": "./scripts/setup-wizard.js"
+    "slack-mcp": "src/cli.js",
+    "slack-mcp-server": "src/server.js",
+    "slack-mcp-http": "src/server-http.js",
+    "slack-mcp-web": "src/web-server.js",
+    "slack-mcp-setup": "scripts/setup-wizard.js"
   },
   "scripts": {
     "start": "node src/server.js",
@@ -26,7 +26,8 @@
     "screenshot": "node scripts/capture-screenshots.js",
     "record-demo": "node scripts/record-demo.js",
     "metrics:release-health": "node scripts/collect-release-health.js",
-    "metrics:release-health:delta": "node scripts/build-release-health-delta.js"
+    "metrics:release-health:delta": "node scripts/build-release-health-delta.js",
+    "verify:version-parity": "node scripts/check-version-parity.js"
   },
   "keywords": [
     "mcp",
@@ -54,13 +55,20 @@
     "channels",
     "workspace",
     "session-based",
+    "session-mirroring",
+    "slack-dm",
+    "slack-threads",
+    "workspace-search",
+    "mcp-tools",
+    "mcp-stdio",
+    "mcp-http",
     "open-source"
   ],
   "author": "jtalk22",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jtalk22/slack-mcp-server.git"
+    "url": "git+https://github.com/jtalk22/slack-mcp-server.git"
   },
   "homepage": "https://jtalk22.github.io/slack-mcp-server/public/demo.html",
   "bugs": {
