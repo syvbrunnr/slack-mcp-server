@@ -27,6 +27,7 @@
 | 2026-02-26T16:18:40Z | GitHub Discussions | Posted post-launch polish + support updates | https://github.com/jtalk22/slack-mcp-server/discussions/12#discussioncomment-15936663, https://github.com/jtalk22/slack-mcp-server/discussions/13#discussioncomment-15936664 | success | Updated announcement and support threads for trust+infra fanout path. |
 | 2026-02-26T16:18:58Z | Hacker News | Verified launch thread remains active (read-only API check) | https://news.ycombinator.com/item?id=47166047 | partial | Thread is live; automated posting path not available in current environment. |
 | 2026-02-26T16:20:12Z | awesome-mcp-servers | Added post-launch polish context comment to open PR | https://github.com/punkpeye/awesome-mcp-servers/pull/2429#issuecomment-3967671355 | success | Clarified current `v2.0.0` public polish status for maintainers/reviewers. |
+| 2026-02-26T16:24:38Z | HN Automation | Attempted local Playwright comment flow against operator Chrome profile | local automation attempt logs | blocked | Active Chrome profile lock prevented safe persistent-context launch (ProcessSingleton). |
 
 ## Pending Fanout
 
