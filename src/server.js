@@ -16,6 +16,7 @@
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { pathToFileURL } from "node:url";
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
@@ -320,10 +321,21 @@ async function main() {
   console.error(`${SERVER_NAME} v${SERVER_VERSION} running`);
 }
 
-main().catch(error => {
-  console.error("Fatal error:", error);
-  process.exit(1);
-});
+function isDirectExecution() {
+  if (!process.argv[1]) return false;
+  try {
+    return import.meta.url === pathToFileURL(process.argv[1]).href;
+  } catch {
+    return false;
+  }
+}
+
+if (isDirectExecution()) {
+  main().catch(error => {
+    console.error("Fatal error:", error);
+    process.exit(1);
+  });
+}
 
 /**
  * Smithery sandbox server for capability scanning
