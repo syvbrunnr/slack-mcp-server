@@ -25,6 +25,7 @@
     "tokens:clear": "node scripts/token-cli.js clear",
     "screenshot": "node scripts/capture-screenshots.js",
     "record-demo": "node scripts/record-demo.js",
+    "cf:browser": "node scripts/cloudflare-browser-tool.js",
     "metrics:release-health": "node scripts/collect-release-health.js",
     "metrics:release-health:delta": "node scripts/build-release-health-delta.js",
     "verify:version-parity": "node scripts/check-version-parity.js"

@@ -13,6 +13,7 @@ Start here for setup, compatibility checks, operations, and support.
 ## Operations
 
 - [Deployment Modes](DEPLOYMENT-MODES.md)
+- [Cloudflare Browser Toolkit](CLOUDFLARE-BROWSER-TOOLKIT.md)
 - [Use Case Recipes](USE_CASE_RECIPES.md)
 - [Support Boundaries](SUPPORT-BOUNDARIES.md)
 
