@@ -3,9 +3,9 @@
 Use this command block in release notes, HN/X/Reddit follow-ups, and issue replies.
 
 ```bash
-npx -y @jtalk22/slack-mcp --version
-npx -y @jtalk22/slack-mcp --doctor
-npx -y @jtalk22/slack-mcp --status
+npx -y @jtalk22/slack-mcp@latest --version
+npx -y @jtalk22/slack-mcp@latest --doctor
+npx -y @jtalk22/slack-mcp@latest --status
 ```
 
 Expected:

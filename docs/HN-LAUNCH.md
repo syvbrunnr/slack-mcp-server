@@ -21,12 +21,13 @@ This release focuses on install reliability and deterministic diagnostics:
 - no MCP tool renames or removals
 
 Verify:
-- `npx -y @jtalk22/slack-mcp --version`
-- `npx -y @jtalk22/slack-mcp --doctor`
-- `npx -y @jtalk22/slack-mcp --status`
+- `npx -y @jtalk22/slack-mcp@latest --version`
+- `npx -y @jtalk22/slack-mcp@latest --doctor`
+- `npx -y @jtalk22/slack-mcp@latest --status`
 
 Repo: https://github.com/jtalk22/slack-mcp-server
 npm: https://www.npmjs.com/package/@jtalk22/slack-mcp
+Maintainer/operator: `jtalk22` (`james@revasser.nyc`)
 ```
 
 ## First Comment Draft
@@ -55,7 +56,7 @@ No. This release keeps existing MCP tool names.
 ### What should I run first?
 Use:
 ```bash
-npx -y @jtalk22/slack-mcp --version
-npx -y @jtalk22/slack-mcp --doctor
-npx -y @jtalk22/slack-mcp --status
+npx -y @jtalk22/slack-mcp@latest --version
+npx -y @jtalk22/slack-mcp@latest --doctor
+npx -y @jtalk22/slack-mcp@latest --status
 ```

@@ -4,25 +4,26 @@ Use this file for channel-specific copy with consistent technical claims.
 
 ## Short Release Summary (150 words)
 
-`@jtalk22/slack-mcp v2.0.0` is out with a focus on deterministic diagnostics and clean operator workflows. This release enforces read-only `--status` behavior in install-path verification, expands `--doctor` coverage to a strict `0/1/2/3` exit matrix, and standardizes structured error envelopes across MCP tool failures and web API validation/runtime paths. Token health handling now reports explicit unknown-age semantics when timestamps are missing, so operators do not get false critical warnings. Metadata is aligned for distribution parity with updated registry-facing server metadata and a new parity checker (`npm run verify:version-parity`) that reports local/npm/registry alignment. MCP tool contracts stay compatible: no renames, no removals. If you use Claude Desktop, Claude Code, or local web mode, this is a drop-in upgrade focused on faster triage and fewer install surprises.
+`@jtalk22/slack-mcp v2.0.0` is now live. This release is a reliability pass focused on install confidence, deterministic diagnostics, and stable contracts. `--status` is enforced as read-only in install-path checks, `--doctor` is standardized to strict `0/1/2/3` exits, and MCP/web error payloads are normalized for faster triage. Token health now handles missing timestamps as explicit unknown-age state, avoiding false critical warnings. Metadata and distribution parity were tightened for npm and registry consistency, including a parity check script (`npm run verify:version-parity`) for one-command validation across local/npm/registry surfaces. No MCP tools were renamed or removed in this release. If you run Claude Desktop, Claude Code, or web mode, `v2.0.0` is a drop-in upgrade designed to reduce operational noise while keeping the current integration contract intact. Built and operated by `jtalk22`.
 
 ## X Thread (7 posts)
 
 1. `Slack MCP Server v2.0.0 is live.`
-   `Focus: deterministic diagnostics + install reliability.`
-2. `No MCP tool renames/removals in this release.`
-   `Compatibility stays stable.`
-3. `Install-path checks now enforce read-only --status behavior.`
-   `No token extraction side effects during status checks.`
-4. `--doctor now enforces deterministic exits:`
-   `0 ready / 1 missing creds / 2 invalid creds / 3 runtime issue.`
-5. `Token health now reports unknown-age semantics when timestamp is missing.`
-   `No false critical warning from missing metadata.`
-6. `Parity checker added: npm/local/registry view in one report.`
-   `npm run verify:version-parity`
-7. `Try it:`
-   `npx -y @jtalk22/slack-mcp --version`
-   `npx -y @jtalk22/slack-mcp --doctor`
+   `This wave is about operational reliability, not feature churn.`
+2. `Install checks now enforce read-only --status.`
+   `No refresh side effects during status validation.`
+3. `--doctor exits are deterministic now: 0/1/2/3.`
+   `Ready, missing creds, invalid creds, runtime issue.`
+4. `Diagnostics are normalized across CLI/MCP/Web payloads.`
+   `Fewer ambiguous errors when triaging installs.`
+5. `Missing token timestamps now map to unknown age.`
+   `No false critical warnings from absent metadata.`
+6. `Compatibility stayed stable in v2.0.0.`
+   `No MCP tool rename/removal in this cut.`
+7. `Install proof:`
+   `npx -y @jtalk22/slack-mcp@latest --version`
+   `npx -y @jtalk22/slack-mcp@latest --doctor`
+   `npx -y @jtalk22/slack-mcp@latest --status`
    `Repo: https://github.com/jtalk22/slack-mcp-server`
 
 ## Reddit Post (Technical Variant)
@@ -44,12 +45,14 @@ Main changes are reliability-focused:
 No MCP tool renames or removals in this release.
 
 Verify:
-`npx -y @jtalk22/slack-mcp --version`
-`npx -y @jtalk22/slack-mcp --doctor`
-`npx -y @jtalk22/slack-mcp --status`
+`npx -y @jtalk22/slack-mcp@latest --version`
+`npx -y @jtalk22/slack-mcp@latest --doctor`
+`npx -y @jtalk22/slack-mcp@latest --status`
 
 Repo: https://github.com/jtalk22/slack-mcp-server
 npm: https://www.npmjs.com/package/@jtalk22/slack-mcp
+
+Maintainer/operator: `jtalk22` (`james@revasser.nyc`)
 ```
 
 ## Registry Propagation Note
