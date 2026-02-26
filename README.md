@@ -326,9 +326,15 @@ finally { refreshInProgress = false; }
 
 ---
 
-## Web UI (for claude.ai — no MCP support)
+## Web UI (optional browser/local fallback)
 
-If you're using claude.ai in a browser (which doesn't support MCP), you can use the REST server instead:
+Claude now supports remote MCP connectors on paid plans. For claude.ai, the preferred path is adding a remote connector in Settings -> Connectors.
+
+Reference:
+- https://support.anthropic.com/en/articles/11995447-connectors-in-claude
+- https://support.anthropic.com/en/articles/11175166-about-custom-integrations-using-remote-mcp
+
+Use this Web UI when you want a local localhost dashboard, REST access, or a fallback workflow without remote connector hosting:
 
 ```bash
 npm run web

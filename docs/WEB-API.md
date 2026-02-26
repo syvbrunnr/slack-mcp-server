@@ -1,6 +1,15 @@
 # Web API Reference
 
-The Slack Web Server exposes all MCP tools as REST endpoints, accessible from any browser or HTTP client. This is useful for accessing Slack from claude.ai (which doesn't support MCP).
+The Slack Web Server exposes all MCP tools as REST endpoints, accessible from any browser or HTTP client.
+
+Claude web now supports remote MCP connectors on paid plans, so this Web API mode is best used for:
+- local localhost dashboard workflows
+- REST/API integrations
+- fallback operation when you do not want to host a remote MCP endpoint
+
+References:
+- https://support.anthropic.com/en/articles/11995447-connectors-in-claude
+- https://support.anthropic.com/en/articles/11175166-about-custom-integrations-using-remote-mcp
 
 ## Starting the Server
 
@@ -269,9 +278,9 @@ The UI auto-connects with the default API key:
 4. Send messages directly from the browser
 
 **Using with claude.ai:**
-1. Open the web UI alongside claude.ai
-2. Browse/search for relevant conversations
-3. Copy-paste message content into claude.ai as needed
+1. Preferred: add a remote MCP connector in Claude settings if you run a remote endpoint.
+2. Fallback: open the web UI alongside claude.ai for local browsing/search.
+3. Copy-paste relevant message content as needed.
 
 ---
 
