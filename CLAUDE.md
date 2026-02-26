@@ -1,12 +1,12 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides maintainer-oriented context for automated edits in this repository.
 
-## What This Is
+## Project Scope
 
-Full Slack access for Claude via MCP. Session mirroring (not OAuth) bypasses admin approval. First open-source project under jtalk22.
+Session-based Slack MCP server for local and hosted runtimes.
 
-## Build & Run
+## Build and Run
 
 ```bash
 npm install
@@ -16,14 +16,14 @@ npm run tokens:auto            # Auto-extract from Chrome (macOS)
 npm run tokens:status          # Check token health
 ```
 
-## Installation Options
+## Installation Paths
 
 ```bash
-npx @jtalk22/slack-mcp         # npm global
+npx -y @jtalk22/slack-mcp      # package entrypoint
 docker pull ghcr.io/jtalk22/slack-mcp-server:latest
 ```
 
-## 11 MCP Tools
+## MCP Tools
 
 | Tool | Purpose |
 |------|---------|
@@ -39,32 +39,28 @@ docker pull ghcr.io/jtalk22/slack-mcp-server:latest
 | `slack_users_info` | Get user details |
 | `slack_list_users` | List workspace users |
 
-## Token Persistence (4-layer)
+## Token Persistence Layers
 
 1. Environment variables
 2. Token file (`~/.slack-mcp-tokens.json`)
 3. macOS Keychain
 4. Chrome auto-extraction (macOS only)
 
-## Architecture
+## Architecture Notes
 
-- **Session mirroring:** Uses browser tokens (xoxc- + xoxd-) for user-level access
-- **Token lifecycle:** Expires 1-2 weeks but auto-refresh from Chrome
-- **Reliability:** Atomic file writes, mutex lock, LRU cache
+- Session-based access uses browser tokens (`xoxc-` + `xoxd-`).
+- Token lifecycle is time-bounded and may require refresh.
+- Reliability controls include atomic file writes, mutex locking, and cached lookups.
 
-## Project Structure
+## Structure
 
-```
+```text
 src/
-├── server.js         # MCP server entry point
-└── web-server.js     # REST API + Web UI
+  server.js        MCP server entry point
+  web-server.js    REST API + Web UI
 lib/
-├── token-store.js    # 4-layer token persistence
-├── slack-client.js   # API client with retry logic
-├── tools.js          # MCP tool definitions
-└── handlers.js       # Tool implementations
+  token-store.js   token persistence
+  slack-client.js  Slack API client and retry logic
+  tools.js         MCP tool definitions
+  handlers.js      MCP tool handlers
 ```
-
-## Ecosystem Role
-
-Enables Claude to access full Slack context (DMs, channels, search) without OAuth admin approval. Part of the MCP perceptual capabilities that feed into the larger orchestration vision.
