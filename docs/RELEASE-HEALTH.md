@@ -36,7 +36,7 @@ Outputs:
 
 - Weekly support minutes spent.
 - Deployment-intake quality (clear use case, owner, timeline).
-- Conversion source notes (search, referrals, docs traffic).
+- Traffic source notes (search, referrals, docs traffic).
 - External \"first run succeeded\" confirmations (issues/discussions).
 
 ## Recommended cadence
