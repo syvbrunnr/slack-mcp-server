@@ -30,7 +30,7 @@ import {
 } from "../lib/handlers.js";
 
 const SERVER_NAME = "slack-mcp-server";
-const SERVER_VERSION = "1.2.4";
+const SERVER_VERSION = "2.0.0";
 const PORT = process.env.PORT || 3000;
 
 // Create MCP server
@@ -74,13 +74,29 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         return await handleListUsers(args);
       default:
         return {
-          content: [{ type: "text", text: `Unknown tool: ${name}` }],
+          content: [{
+            type: "text",
+            text: JSON.stringify({
+              status: "error",
+              code: "unknown_tool",
+              message: `Unknown tool: ${name}`,
+              next_action: "Call tools/list to inspect available tool names."
+            }, null, 2)
+          }],
           isError: true
         };
     }
   } catch (error) {
     return {
-      content: [{ type: "text", text: `Error: ${error.message}` }],
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          status: "error",
+          code: "tool_call_failed",
+          message: String(error?.message || error),
+          next_action: "Retry with validated input payload."
+        }, null, 2)
+      }],
       isError: true
     };
   }
@@ -110,7 +126,13 @@ const httpServer = http.createServer(async (req, res) => {
   // Health check endpoint
   if (req.url === '/health') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ status: 'ok', server: SERVER_NAME, version: SERVER_VERSION }));
+    res.end(JSON.stringify({
+      status: 'ok',
+      code: 'ok',
+      message: 'HTTP transport healthy',
+      server: SERVER_NAME,
+      version: SERVER_VERSION
+    }));
     return;
   }
 

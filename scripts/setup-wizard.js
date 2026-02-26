@@ -23,8 +23,9 @@ import {
 } from "../lib/token-store.js";
 
 const IS_MACOS = platform() === 'darwin';
-const VERSION = "1.2.4";
+const VERSION = "2.0.0";
 const MIN_NODE_MAJOR = 20;
+const AUTH_TEST_URL = process.env.SLACK_MCP_AUTH_TEST_URL || "https://slack.com/api/auth.test";
 
 // ANSI colors
 const colors = {
@@ -78,7 +79,7 @@ async function pressEnterToContinue(rl) {
 
 async function validateTokens(token, cookie) {
   try {
-    const response = await fetch("https://slack.com/api/auth.test", {
+    const response = await fetch(AUTH_TEST_URL, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -251,6 +252,8 @@ async function showStatus() {
 
   if (!creds) {
     error("No tokens found");
+    print("Code: missing_credentials");
+    print("Message: No credentials available from environment, file, or keychain.");
     print();
     print("Run setup wizard: npx -y @jtalk22/slack-mcp --setup");
     process.exit(1);
@@ -268,6 +271,7 @@ async function showStatus() {
   const result = await validateTokens(creds.token, creds.cookie);
   if (!result.valid) {
     error("Status: INVALID");
+    print("Code: auth_failed");
     print(`Error: ${result.error}`);
     print();
     print("Run setup wizard to refresh: npx -y @jtalk22/slack-mcp --setup");
@@ -275,6 +279,8 @@ async function showStatus() {
   }
 
   success("Status: VALID");
+  print("Code: ok");
+  print("Message: Slack auth valid.");
   print(`User: ${result.user}`);
   print(`Team: ${result.team}`);
   print(`User ID: ${result.userId}`);
@@ -331,6 +337,7 @@ async function runDoctor() {
   const nodeMajor = parseNodeMajor();
   if (Number.isNaN(nodeMajor) || nodeMajor < MIN_NODE_MAJOR) {
     error(`Node.js ${process.versions.node} detected (requires Node ${MIN_NODE_MAJOR}+)`);
+    print("Code: runtime_node_unsupported");
     print();
     print("Next action:");
     print(`  npx -y @jtalk22/slack-mcp --doctor  # rerun after upgrading Node ${MIN_NODE_MAJOR}+`);
@@ -341,6 +348,7 @@ async function runDoctor() {
   const creds = getDoctorCredentials();
   if (!creds) {
     error("Credentials: not found");
+    print("Code: missing_credentials");
     print();
     print("Next action:");
     print("  npx -y @jtalk22/slack-mcp --setup");
@@ -361,6 +369,7 @@ async function runDoctor() {
   if (!validation.valid) {
     const exitCode = classifyAuthError(validation.error);
     error(`Slack auth failed: ${validation.error}`);
+    print(`Code: ${exitCode === 2 ? "auth_invalid" : "runtime_auth_check_failed"}`);
     print();
     print("Next action:");
     if (exitCode === 2) {
@@ -373,6 +382,7 @@ async function runDoctor() {
   }
 
   success(`Slack auth valid for ${validation.user} @ ${validation.team}`);
+  print("Code: ok");
   print();
   print("Ready. Next command:");
   print("  npx -y @jtalk22/slack-mcp");

@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-02-26
+
+### Fixed
+- Enforced read-only `--status` behavior in install-flow verification for both local and published `npx` paths.
+- Added deterministic `--doctor` runtime failure coverage (`exit 3`) using explicit connectivity test wiring.
+- Standardized MCP transport tool-call failures with structured error payloads (`status`, `code`, `message`, `next_action`).
+
+### Improved
+- Added explicit `unknown_age` token-state semantics when credential timestamps are unavailable.
+- Normalized web API error responses to structured diagnostics for auth, validation, and runtime failures.
+- Added `verify:version-parity` script and report generation for npm/MCP registry/local metadata parity checks.
+- Updated public metadata surface for distribution (`server.json` title, website URL, icon metadata).
+
+### Compatibility
+- No MCP tool renames or removals.
+
 ## [1.2.4] - 2026-02-26
 
 ### Fixed
@@ -213,3 +229,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.0.6]: https://github.com/jtalk22/slack-mcp-server/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/jtalk22/slack-mcp-server/compare/v1.0.0...v1.0.5
 [1.0.0]: https://github.com/jtalk22/slack-mcp-server/releases/tag/v1.0.0
+[2.0.0]: https://github.com/jtalk22/slack-mcp-server/compare/v1.2.4...v2.0.0

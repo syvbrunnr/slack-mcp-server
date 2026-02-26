@@ -11,7 +11,7 @@
  * - Network error retry with exponential backoff
  * - Background token health monitoring
  *
- * @version 1.2.4
+ * @version 2.0.0
  */
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
@@ -47,7 +47,7 @@ const BACKGROUND_REFRESH_INTERVAL = 4 * 60 * 60 * 1000;
 
 // Package info
 const SERVER_NAME = "slack-mcp-server";
-const SERVER_VERSION = "1.2.4";
+const SERVER_VERSION = "2.0.0";
 
 // MCP Prompts - predefined prompt templates for common Slack operations
 const PROMPTS = [
@@ -256,13 +256,29 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       default:
         return {
-          content: [{ type: "text", text: `Unknown tool: ${name}` }],
+          content: [{
+            type: "text",
+            text: JSON.stringify({
+              status: "error",
+              code: "unknown_tool",
+              message: `Unknown tool: ${name}`,
+              next_action: "Use tools/list to discover available tools."
+            }, null, 2)
+          }],
           isError: true
         };
     }
   } catch (error) {
     return {
-      content: [{ type: "text", text: `Error: ${error.message}` }],
+      content: [{
+        type: "text",
+        text: JSON.stringify({
+          status: "error",
+          code: "tool_call_failed",
+          message: String(error?.message || error),
+          next_action: "Retry the call and include full arguments."
+        }, null, 2)
+      }],
       isError: true
     };
   }

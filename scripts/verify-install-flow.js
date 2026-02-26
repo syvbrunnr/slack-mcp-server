@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const PKG = "@jtalk22/slack-mcp";
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
+const strictPublished = process.argv.includes("--strict-published");
+const localVersion = JSON.parse(readFileSync(join(repoRoot, "package.json"), "utf8")).version;
 
 function runNpx(args, options = {}) {
   const cmdArgs = ["-y", PKG, ...args];
@@ -97,6 +99,18 @@ function main() {
       "Expected --version to exit 0",
       versionResult.stderr || versionResult.stdout,
     );
+    const publishedMatchesLocal = versionResult.stdout.includes(localVersion);
+    if (strictPublished) {
+      assert(
+        publishedMatchesLocal,
+        `Expected published npx version to match local ${localVersion}`,
+        versionResult.stdout,
+      );
+    } else if (!publishedMatchesLocal) {
+      console.log(
+        `warning: npx resolved ${versionResult.stdout || "unknown"} while local version is ${localVersion}; strict published checks are deferred until publish.`
+      );
+    }
 
     const helpResult = runNpx(["--help"], { cwd: testHome, env });
     printResult("help", helpResult);
@@ -113,6 +127,15 @@ function main() {
       "Expected --status to exit non-zero when credentials are missing",
       statusResult.stderr || statusResult.stdout,
     );
+    if (strictPublished) {
+      assert(
+        !statusResult.stderr.includes("Attempting Chrome auto-extraction"),
+        "Expected npx --status to be read-only without auto-extraction side effects",
+        statusResult.stderr,
+      );
+    } else if (statusResult.stderr.includes("Attempting Chrome auto-extraction")) {
+      console.log("warning: published npx --status still has extraction side effects; re-run with --strict-published after publish.");
+    }
 
     const localStatusResult = runLocalSetupStatus({ env });
     printResult("local-status", localStatusResult);
@@ -146,6 +169,18 @@ function main() {
       localDoctorInvalidResult.status === 2,
       "Expected local --doctor to exit 2 when credentials are invalid",
       localDoctorInvalidResult.stderr || localDoctorInvalidResult.stdout,
+    );
+
+    const runtimeEnv = {
+      ...invalidEnv,
+      SLACK_MCP_AUTH_TEST_URL: "http://127.0.0.1:9/auth.test"
+    };
+    const localDoctorRuntimeResult = runLocalDoctor({ env: runtimeEnv });
+    printResult("local-doctor-runtime", localDoctorRuntimeResult);
+    assert(
+      localDoctorRuntimeResult.status === 3,
+      "Expected local --doctor to exit 3 when runtime connectivity fails",
+      localDoctorRuntimeResult.stderr || localDoctorRuntimeResult.stdout,
     );
 
     console.log("\nInstall flow verification passed.");

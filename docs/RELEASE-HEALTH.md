@@ -13,6 +13,21 @@ Outputs:
 - `docs/release-health/YYYY-MM-DD.md`
 - `docs/release-health/automation-delta.md` (when delta script is run)
 
+## Version parity report
+
+```bash
+npm run verify:version-parity
+```
+
+Output:
+- `docs/release-health/version-parity.md`
+
+If external registries are still propagating immediately after publish:
+
+```bash
+npm run verify:version-parity -- --allow-propagation
+```
+
 24-hour loop artifacts:
 - `docs/release-health/24h-start.md`
 - `docs/release-health/24h-end.md`
