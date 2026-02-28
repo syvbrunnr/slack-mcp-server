@@ -2,7 +2,7 @@
 
 ## Scope
 
-Social Proof Surface Sprint on `v3.0.0` (no semver bump, no runtime behavior changes).
+Public surface update on `v3.0.0` (no semver bump, no runtime behavior changes).
 
 ## What Changed
 
@@ -35,5 +35,5 @@ Social Proof Surface Sprint on `v3.0.0` (no semver bump, no runtime behavior cha
 ## Notes
 
 - Discussion pinning remains a manual GitHub UI step for `#12` (Announcements).
-- Social-proof render artifacts were captured locally and intentionally kept private (`output/playwright/social-proof-20260228T051333Z/`).
+- Render artifacts were captured locally for internal review and intentionally kept private.
 - HEAD link checks returned `200` for GitHub/docs/discussion URLs; npm package URL returned `403` on HEAD due anti-bot controls while `npm view` confirms published `3.0.0`.

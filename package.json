@@ -76,7 +76,7 @@
     "type": "git",
     "url": "git+https://github.com/jtalk22/slack-mcp-server.git"
   },
-  "homepage": "https://jtalk22.github.io/slack-mcp-server/public/demo.html",
+  "homepage": "https://jtalk22.github.io/slack-mcp-server/",
   "bugs": {
     "url": "https://github.com/jtalk22/slack-mcp-server/issues"
   },

@@ -86,6 +86,12 @@ async function captureScreenshots() {
   {
     const { context, page } = await openPage(browser, demoClaudePath, { width: 1280, height: 800 });
     console.log('Capturing poster image...');
+    // Wait for transient scenario caption animation to settle.
+    await page.waitForTimeout(2600);
+    await page.evaluate(() => {
+      const caption = document.getElementById('scenarioCaption');
+      if (caption) caption.classList.remove('visible');
+    });
     await page.screenshot({
       path: join(imagesDir, 'demo-poster.png'),
       clip: { x: 0, y: 0, width: 1280, height: 800 }

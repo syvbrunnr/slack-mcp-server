@@ -19,13 +19,13 @@
   <meta property="og:description" content="Session-based Slack access for Claude with your existing workspace permissions. Search, thread, and messaging workflows.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://jtalk22.github.io/slack-mcp-server/public/demo-claude.html">
-  <meta property="og:image" content="https://raw.githubusercontent.com/jtalk22/slack-mcp-server/main/docs/images/demo-claude.gif">
+  <meta property="og:image" content="https://jtalk22.github.io/slack-mcp-server/docs/images/social-preview-v3.png">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Slack MCP Server - Session-Based Slack Access Demo">
   <meta name="twitter:description" content="Session-based Slack access for Claude with your existing workspace permissions. Search, thread, and messaging workflows.">
-  <meta name="twitter:image" content="https://raw.githubusercontent.com/jtalk22/slack-mcp-server/main/docs/images/demo-claude.gif">
+  <meta name="twitter:image" content="https://jtalk22.github.io/slack-mcp-server/docs/images/social-preview-v3.png">
 
   <!-- Theme -->
   <meta name="theme-color" content="#1a1a1a">
@@ -357,6 +357,7 @@
       box-shadow: var(--shadow-lg);
       overflow: hidden;
       border: 1px solid var(--window-border);
+      position: relative;
     }
 
     .window-chrome {
@@ -922,6 +923,11 @@
       display: none !important;
     }
 
+    body.fullscreen-mode .cta-strip,
+    body.fullscreen-mode .scenario-caption {
+      display: none !important;
+    }
+
     body.fullscreen-mode .claude-window {
       max-width: 100%;
       height: 100vh;
@@ -1078,6 +1084,12 @@
       .tools-dropdown:hover {
         transform: translateX(-50%) translateY(0);
       }
+
+      .scenario-caption {
+        top: 56px;
+        font-size: 12px;
+        padding: 7px 14px;
+      }
     }
 
     /* ═══════════════════════════════════════════════════════════════
@@ -1119,7 +1131,7 @@
     /* Scenario Caption Overlay */
     .scenario-caption {
       position: absolute;
-      top: 72px;
+      top: 60px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(0, 0, 0, 0.75);
@@ -1132,6 +1144,10 @@
       transition: opacity 0.3s ease;
       z-index: 50;
       pointer-events: none;
+      max-width: calc(100% - 24px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .scenario-caption.visible {

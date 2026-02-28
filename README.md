@@ -113,7 +113,7 @@ Instead of authenticating as a bot, this server leverages your existing Chrome s
 
 **Runtime:** Node.js 20+
 
-### First-Time Setup Check
+### 30-Second Compatibility Check
 
 ```bash
 npx -y @jtalk22/slack-mcp --setup

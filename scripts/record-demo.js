@@ -27,6 +27,7 @@ const CONFIG = {
   viewport: { width: 1280, height: 800 },
   speed: '0.5', // Slow speed for video recording
   scenarioCount: 5,
+  initialHold: 500,
   // Title and closing card durations (ms)
   introDuration: 4000,   // Title card (3s visible + fade)
   outroDuration: 5500,   // Closing card (4s visible + fades)
@@ -81,9 +82,9 @@ async function recordDemo() {
   await page.goto(`file://${demoPath}`);
   await page.waitForTimeout(1000);
 
-  // Hold on initial frame for a few seconds (visible first frame in GIF)
-  console.log('⏸️  Holding initial frame (3s)...');
-  await page.waitForTimeout(3000);
+  // Keep first frame brief so autoplay reaches full-screen flow quickly.
+  console.log(`⏸️  Holding initial frame (${CONFIG.initialHold}ms)...`);
+  await page.waitForTimeout(CONFIG.initialHold);
 
   // Set slow speed for video recording
   console.log(`⏱️  Setting speed to ${CONFIG.speed}x...`);

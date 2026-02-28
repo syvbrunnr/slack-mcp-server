@@ -3,7 +3,7 @@
   "name": "io.github.jtalk22/slack-mcp-server",
   "title": "Slack MCP Server",
   "description": "Session-based Slack access for Claude: DMs, channels, search, and threads via your Slack session.",
-  "websiteUrl": "https://jtalk22.github.io/slack-mcp-server/public/demo.html",
+  "websiteUrl": "https://jtalk22.github.io/slack-mcp-server/",
   "icons": [
     {
       "src": "https://raw.githubusercontent.com/jtalk22/slack-mcp-server/main/docs/assets/icon-512.png",

@@ -14,7 +14,7 @@ Outputs:
 - `docs/release-health/automation-delta.md` (when delta script is run)
 - `docs/release-health/impact-baseline-2026-02-28.md` (manual impact baseline for v3 wave)
 - `docs/release-health/impact-delta-24h.md` / `impact-delta-72h.md` (conversion loop artifacts)
-- `docs/release-health/state-of-union-2026-02-28.md` (social-proof sprint summary)
+- `docs/release-health/state-of-union-2026-02-28.md` (public-surface update summary)
 
 ## Impact Push Automation (v3)
 
