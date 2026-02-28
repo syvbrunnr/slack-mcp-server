@@ -45,6 +45,26 @@ const context = await chromium.launchPersistentContext(profileDir, {
 });
 const page = await context.newPage();
 
+const getSocialPreviewImageSrc = async () => {
+  return page.evaluate(() => {
+    const headings = Array.from(document.querySelectorAll("h1, h2, h3, h4, strong"));
+    const socialHeading = headings.find((el) => el.textContent?.trim() === "Social preview");
+    if (!socialHeading) return null;
+
+    let node = socialHeading.parentElement;
+    for (let depth = 0; depth < 6 && node; depth += 1) {
+      const img = node.querySelector("img");
+      if (img?.src) return img.src;
+      node = node.parentElement;
+    }
+
+    const fallback = Array.from(document.querySelectorAll("img")).find((img) =>
+      img.src.includes("repository-images.githubusercontent.com")
+    );
+    return fallback?.src || null;
+  });
+};
+
 const waitForAuthenticatedSettings = async () => {
   const started = Date.now();
   while (Date.now() - started < loginTimeoutMs) {
@@ -76,6 +96,7 @@ try {
   const socialHeading = page.getByText("Social preview", { exact: true }).first();
   await socialHeading.waitFor({ timeout: 120000 });
   await socialHeading.scrollIntoViewIfNeeded();
+  const beforeImageSrc = await getSocialPreviewImageSrc();
 
   // In current GitHub settings, upload is often behind an Edit button.
   const editButtons = page.getByRole("button", { name: /^Edit$/i });
@@ -98,6 +119,13 @@ try {
   await fileInput.waitFor({ state: "attached", timeout: 90000 });
   await fileInput.setInputFiles(imagePath);
   await page.waitForTimeout(1500);
+  const afterUploadImageSrc = await getSocialPreviewImageSrc();
+  const previewUpdated =
+    Boolean(afterUploadImageSrc) && afterUploadImageSrc !== beforeImageSrc;
+  const previewAlreadyPresent =
+    Boolean(beforeImageSrc) &&
+    Boolean(afterUploadImageSrc) &&
+    beforeImageSrc === afterUploadImageSrc;
 
   // GitHub UI labels can vary; try likely save/update actions.
   const saveCandidates = [
@@ -126,7 +154,7 @@ try {
     }
   }
 
-  if (!clicked) {
+  if (!clicked && !previewUpdated) {
     const visibleButtons = await page
       .locator("button:visible")
       .evaluateAll((els) => els.map((el) => el.textContent?.trim() || "").filter(Boolean))
@@ -134,7 +162,11 @@ try {
     console.log("Visible buttons during upload:", visibleButtons.join(" | "));
   }
 
-  if (!clicked) {
+  if (previewUpdated) {
+    console.log("Social preview image updated in settings preview.");
+  } else if (previewAlreadyPresent) {
+    console.log("Social preview image is already present; no save action required.");
+  } else if (!clicked) {
     console.log(
       "Uploaded image file to input; could not confidently click a save button automatically."
     );
