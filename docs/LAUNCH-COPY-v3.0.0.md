@@ -4,23 +4,23 @@ Canonical text blocks for GitHub release surfaces, listings, and operator update
 
 ## Short Summary (Public)
 
-`@jtalk22/slack-mcp v3.0.0` is live. This release keeps local-first operation unchanged (`stdio`, `web`) and hardens hosted HTTP mode with secure defaults. Hosted `/mcp` now requires bearer authentication using `SLACK_MCP_HTTP_AUTH_TOKEN`, and browser-origin access now uses explicit allowlisting via `SLACK_MCP_HTTP_ALLOWED_ORIGINS`. The major version reflects this hosted behavior change; local workflows and MCP tool names remain stable. Diagnostics remain deterministic (`--doctor` returns `0|1|2|3`), and `--status` remains read-only for safe checks. Public demo/media checks are now included in web verification so broken assets are caught before publish. Maintainer/operator: `jtalk22` (`james@revasser.nyc`).
+`@jtalk22/slack-mcp v3.0.0` is live. `v3.0.0` flips hosted `/mcp` from permissive to secure-default without breaking local workflows. Local-first operation stays unchanged (`stdio`, `web`) while hosted HTTP now requires bearer authentication (`SLACK_MCP_HTTP_AUTH_TOKEN`) and explicit origin allowlisting (`SLACK_MCP_HTTP_ALLOWED_ORIGINS`). The major version reflects this hosted behavior shift; MCP tool names remain stable. Diagnostics remain deterministic (`--doctor` returns `0|1|2|3`), and `--status` remains read-only. Public demo/media checks are now included in web verification so broken assets are caught before publish. Maintainer/operator: `jtalk22` (`james@revasser.nyc`).
 
 ## GitHub Release Block
 
 ```md
-`v3.0.0` secures hosted HTTP defaults while keeping local-first workflows stable.
+`v3.0.0` flips hosted `/mcp` from permissive to secure-default without breaking local workflows.
+
+Verify first:
+`npx -y @jtalk22/slack-mcp@latest --version`
+`npx -y @jtalk22/slack-mcp@latest --doctor`
+`npx -y @jtalk22/slack-mcp@latest --status`
 
 What changed:
 - `/mcp` requires bearer auth by default
 - CORS is origin-allowlist driven (`SLACK_MCP_HTTP_ALLOWED_ORIGINS`)
 - no MCP tool renames/removals
 - deterministic diagnostics are preserved
-
-Verify:
-`npx -y @jtalk22/slack-mcp@latest --version`
-`npx -y @jtalk22/slack-mcp@latest --doctor`
-`npx -y @jtalk22/slack-mcp@latest --status`
 ```
 
 ## Hosted Migration Block
@@ -64,6 +64,7 @@ Session-based Slack MCP server for local-first operators. `v3.0.0` hardens hoste
 Need guided hosted deployment help?
 - Open deployment intake: `https://github.com/jtalk22/slack-mcp-server/issues/new?template=deployment-intake.md`
 - Continue in Discussions: `https://github.com/jtalk22/slack-mcp-server/discussions`
+- Support ongoing maintenance: `https://github.com/sponsors/jtalk22`, `https://ko-fi.com/jtalk22`, `https://buymeacoffee.com/jtalk22`
 ```
 
 ## Propagation Note

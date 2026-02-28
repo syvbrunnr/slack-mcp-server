@@ -12,6 +12,20 @@ Outputs:
 - `docs/release-health/latest.md`
 - `docs/release-health/YYYY-MM-DD.md`
 - `docs/release-health/automation-delta.md` (when delta script is run)
+- `docs/release-health/impact-baseline-2026-02-28.md` (manual impact baseline for v3 wave)
+- `docs/release-health/impact-delta-24h.md` / `impact-delta-72h.md` (conversion loop artifacts)
+
+## Impact Push Automation (v3)
+
+```bash
+npm run impact:push:v3
+npm run impact:push:v3:apply
+```
+
+Script:
+- `scripts/impact-push-v3.js`
+
+It syncs release/discussion messaging, refreshes the awesome-mcp-servers PR status comment, polls MCP registry parity, checks Smithery/Glama reachability, and appends evidence rows to `docs/release-health/launch-log-2026-02-28.md`.
 
 ## Version parity report
 

@@ -28,6 +28,8 @@
     "cf:browser": "node scripts/cloudflare-browser-tool.js",
     "metrics:release-health": "node scripts/collect-release-health.js",
     "metrics:release-health:delta": "node scripts/build-release-health-delta.js",
+    "impact:push:v3": "node scripts/impact-push-v3.js --dry-run",
+    "impact:push:v3:apply": "node scripts/impact-push-v3.js --apply",
     "verify:version-parity": "node scripts/check-version-parity.js",
     "verify:release-dry-run": "node scripts/release-preflight.js"
   },

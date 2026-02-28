@@ -29,8 +29,10 @@ npx -y @jtalk22/slack-mcp --setup
 
 If this project saves you setup time, star the repo: https://github.com/jtalk22/slack-mcp-server
 
+Support ongoing maintenance: [GitHub Sponsors](https://github.com/sponsors/jtalk22), [Ko-fi](https://ko-fi.com/jtalk22), [Buy Me a Coffee](https://buymeacoffee.com/jtalk22)
+
 Maintainer/operator: `jtalk22` (`james@revasser.nyc`)  
-Release notes: [v3.0.0 notes](https://github.com/jtalk22/slack-mcp-server/blob/main/.github/v3.0.0-release-notes.md)
+Release: [`v3.0.0`](https://github.com/jtalk22/slack-mcp-server/releases/tag/v3.0.0) · Notes: [v3.0.0 notes](https://github.com/jtalk22/slack-mcp-server/blob/main/.github/v3.0.0-release-notes.md) · Support: [deployment intake](https://github.com/jtalk22/slack-mcp-server/issues/new?template=deployment-intake.md)
 
 ## v3.0.0 at a Glance
 
