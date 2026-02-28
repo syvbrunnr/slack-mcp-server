@@ -47,6 +47,12 @@ const page = await context.newPage();
 
 const getSocialPreviewImageSrc = async () => {
   return page.evaluate(() => {
+    const extractRepoImageUrl = (value) => {
+      if (!value || value === "none") return null;
+      const match = value.match(/https:\/\/repository-images\.githubusercontent\.com\/[^")]+/);
+      return match ? match[0] : null;
+    };
+
     const headings = Array.from(document.querySelectorAll("h1, h2, h3, h4, strong"));
     const socialHeading = headings.find((el) => el.textContent?.trim() === "Social preview");
     if (!socialHeading) return null;
@@ -55,13 +61,28 @@ const getSocialPreviewImageSrc = async () => {
     for (let depth = 0; depth < 6 && node; depth += 1) {
       const img = node.querySelector("img");
       if (img?.src) return img.src;
+
+      const ownBg = extractRepoImageUrl(getComputedStyle(node).backgroundImage);
+      if (ownBg) return ownBg;
+
+      const descendants = Array.from(node.querySelectorAll("*"));
+      for (const child of descendants) {
+        const bg = extractRepoImageUrl(getComputedStyle(child).backgroundImage);
+        if (bg) return bg;
+      }
+
       node = node.parentElement;
     }
 
     const fallback = Array.from(document.querySelectorAll("img")).find((img) =>
       img.src.includes("repository-images.githubusercontent.com")
     );
-    return fallback?.src || null;
+    if (fallback?.src) return fallback.src;
+
+    const bgFallback = Array.from(document.querySelectorAll("*"))
+      .map((el) => extractRepoImageUrl(getComputedStyle(el).backgroundImage))
+      .find(Boolean);
+    return bgFallback || null;
   });
 };
 
