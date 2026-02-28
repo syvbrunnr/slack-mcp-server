@@ -10,7 +10,7 @@ npx -y @jtalk22/slack-mcp@latest --doctor
 npx -y @jtalk22/slack-mcp@latest --status
 ```
 
-[Live demo](https://jtalk22.github.io/slack-mcp-server/public/demo-video.html) · [20-second mobile clip](https://jtalk22.github.io/slack-mcp-server/docs/videos/demo-claude-mobile-20s.mp4) · [Latest release](https://github.com/jtalk22/slack-mcp-server/releases/latest) · [npm package](https://www.npmjs.com/package/@jtalk22/slack-mcp)
+[Live demo](https://jtalk22.github.io/slack-mcp-server/public/demo-video.html) · [20-second mobile clip](https://jtalk22.github.io/slack-mcp-server/docs/videos/demo-claude-mobile-20s.mp4) · [Share card](https://jtalk22.github.io/slack-mcp-server/public/share.html) · [Latest release](https://github.com/jtalk22/slack-mcp-server/releases/latest) · [npm package](https://www.npmjs.com/package/@jtalk22/slack-mcp)
 
 [![20-second mobile demo preview](https://jtalk22.github.io/slack-mcp-server/docs/images/demo-claude-mobile-poster.png)](https://jtalk22.github.io/slack-mcp-server/docs/videos/demo-claude-mobile-20s.mp4)
 
