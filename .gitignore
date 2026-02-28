@@ -145,6 +145,8 @@ docs/videos/*.webm
 # Playwright artifacts
 test-results/
 playwright-report/
+output/playwright/
+docs/release-health/social-proof-*/
 
 # Smithery build artifacts
 .smithery/
