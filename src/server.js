@@ -47,6 +47,16 @@ import {
   handleConversationsUnreads,
   handleUsersSearch,
 } from "../lib/handlers.js";
+import {
+  handleSubscribeNotifications,
+  handleUnsubscribeNotifications,
+  handleGetQueuedMessages,
+  handleGetPipelineMetrics,
+} from "../lib/notification-handlers.js";
+import { getMessageQueue, closeMessageQueue } from "../lib/message-queue.js";
+import { matchesSubscription, isSilentChannel } from "../lib/notification-subscriptions.js";
+import { increment } from "../lib/pipeline-metrics.js";
+import { stopPolling } from "../lib/slack-poller.js";
 
 // Background refresh interval (4 hours)
 const BACKGROUND_REFRESH_INTERVAL = 4 * 60 * 60 * 1000;
@@ -116,7 +126,22 @@ const RESOURCES = [
 // Initialize server
 const server = new Server(
   { name: SERVER_NAME, version: SERVER_VERSION },
-  { capabilities: { tools: {}, prompts: {}, resources: {} } }
+  {
+    capabilities: {
+      tools: {},
+      prompts: {},
+      resources: {},
+      experimental: {
+        "claude/channel": {},
+      },
+    },
+    instructions:
+      "Slack messages from subscribed channels arrive as <channel source=\"slack-mcp-server\" ...> tags. " +
+      "Attributes include: sender (user ID), channel_id, channel_name, is_dm, ts. " +
+      "For DMs, reply using slack_send_message with the channel_id. " +
+      "Use slack_get_queued_messages for batch retrieval of accumulated messages. " +
+      "Silent channels queue messages without channel delivery — check them with slack_get_queued_messages on a schedule.",
+  }
 );
 
 // Register tool list handler
@@ -275,6 +300,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case "slack_users_search":
         return await handleUsersSearch(args);
 
+      case "slack_subscribe_notifications":
+        return await handleSubscribeNotifications(args);
+
+      case "slack_unsubscribe_notifications":
+        return await handleUnsubscribeNotifications();
+
+      case "slack_get_queued_messages":
+        return await handleGetQueuedMessages(args);
+
+      case "slack_get_pipeline_metrics":
+        return await handleGetPipelineMetrics();
+
       default:
         return {
           content: [{
@@ -343,6 +380,39 @@ async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error(`${SERVER_NAME} v${SERVER_VERSION} running`);
+
+  // Wire up channel notifications: when new messages arrive in the queue,
+  // send notifications/claude/channel with metadata only (no message body).
+  // Only fires if the event matches an active subscription (silent by default).
+  getMessageQueue().on("new-item", (event) => {
+    if (!event || !matchesSubscription(event)) return;
+    // Silent channels: messages are queued but don't trigger channel notifications
+    if (isSilentChannel(event.channelId)) return;
+
+    // Build notification — metadata only, no message body (prevents prompt injection).
+    // The agent should call slack_get_queued_messages to retrieve actual content.
+    const content = event.isDM ? "New DM" : "New message";
+    const meta = {
+      type: "message",
+      sender: event.userId || "",
+      channel_id: event.channelId || "",
+      channel_name: event.channelName || "",
+      is_dm: String(!!event.isDM),
+      ts: event.ts || "",
+    };
+
+    // notification() is async — use .then()/.catch(), NEVER sync try/catch
+    server.notification({
+      method: "notifications/claude/channel",
+      params: { content, meta },
+    }).then(() => {
+      increment("notificationsSent");
+      console.error(`[channel] Sent: ${content} from ${meta.sender} in ${meta.channel_name}`);
+    }).catch((err) => {
+      increment("notificationsFailed");
+      console.error(`[channel] Failed to send: ${err.message}`);
+    });
+  });
 }
 
 function isDirectExecution() {

@@ -19,8 +19,9 @@ npm run tokens:status          # Check token health
 ## Installation Paths
 
 ```bash
-npx -y @jtalk22/slack-mcp      # package entrypoint
-docker pull ghcr.io/jtalk22/slack-mcp-server:latest
+npx -y @jtalk22/slack-mcp                          # upstream npm package
+npx github:syvbrunnr/slack-mcp-server               # this fork (includes channel notifications)
+docker pull ghcr.io/jtalk22/slack-mcp-server:latest  # upstream docker image
 ```
 
 ## MCP Tools
@@ -43,6 +44,17 @@ docker pull ghcr.io/jtalk22/slack-mcp-server:latest
 | `slack_conversations_mark` | Mark conversation as read |
 | `slack_conversations_unreads` | Get channels/DMs with unread messages |
 | `slack_users_search` | Search users by name/email |
+| `slack_subscribe_notifications` | Subscribe to real-time message notifications via Claude Code channels |
+| `slack_unsubscribe_notifications` | Remove all notification subscriptions |
+| `slack_get_queued_messages` | Retrieve accumulated messages from notification queue |
+| `slack_get_pipeline_metrics` | Get notification pipeline health metrics |
+
+## Channel Notifications (opt-in)
+
+The server supports Claude Code channel notifications for real-time message delivery.
+Subscribe with `slack_subscribe_notifications` to start receiving `<channel source="slack-mcp-server" ...>` tags.
+Messages are polled from Slack at a configurable interval (env `SLACK_MCP_POLL_INTERVAL_MS`, default 5s).
+Queue persistence uses a JSON file in `SLACK_MCP_DATA_DIR` (default `~/.slack-mcp-data/`).
 
 ## Token Persistence Layers
 
@@ -61,11 +73,15 @@ docker pull ghcr.io/jtalk22/slack-mcp-server:latest
 
 ```text
 src/
-  server.js        MCP server entry point
+  server.js        MCP server entry point (stdio, channel notifications)
   web-server.js    REST API + Web UI
 lib/
   token-store.js   token persistence
   slack-client.js  Slack API client and retry logic
   tools.js         MCP tool definitions
   handlers.js      MCP tool handlers
+  message-queue.js           JSON-file message queue with dedup
+  notification-subscriptions.js  in-memory subscription store
+  pipeline-metrics.js        notification pipeline counters
+  slack-poller.js            polling loop for subscribed channels
 ```

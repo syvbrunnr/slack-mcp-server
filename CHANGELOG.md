@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.0] - 2026-03-25
+
+### Added
+- **Real-time notifications** — Claude Code channel notifications for push-style message delivery. Subscribe with `slack_subscribe_notifications` to receive `<channel>` tags as messages arrive.
+- **4 new tools** — `slack_subscribe_notifications`, `slack_unsubscribe_notifications`, `slack_get_queued_messages`, `slack_get_pipeline_metrics` (20 tools total).
+- **Slack polling loop** — Polls subscribed channels at a configurable interval (`SLACK_MCP_POLL_INTERVAL_MS`, default 5s). Tracks latest timestamp per channel for incremental fetches.
+- **Message queue** — JSON file-persisted queue (`SLACK_MCP_DATA_DIR`) with dedup, batch retrieval, and automatic cleanup.
+- **Silent channels** — Channels that queue messages without pushing notifications, for batch-checking on a schedule.
+- **Pipeline metrics** — Counters for events received, messages enqueued/deduplicated, notifications sent/failed.
+
+### Security
+- Channel notifications send metadata only (sender, channel, type) — no message body, preventing prompt injection.
+- Multi-instance safe: notification emission is decoupled from DB dedup so each server instance notifies its own subscriber.
+
+### Notes
+- Fully opt-in — server works identically to upstream if you never call `slack_subscribe_notifications`.
+- Requires `claude --dangerously-load-development-channels server:slack-mcp-server` to enable channel delivery.
+
 ## [3.2.4] - 2026-03-11
 
 ### Fixed

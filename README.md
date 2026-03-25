@@ -5,7 +5,7 @@
 [![MCP Registry](https://img.shields.io/badge/MCP_Registry-listed-blue)](https://registry.modelcontextprotocol.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-Give Claude your Slack. 16 self-hosted tools for channels, search, replies, reactions, unread triage, and user search. Self-host free or use Slack MCP Cloud for Claude-first managed transport, Gemini CLI support, hosted credential handling, deployment review, procurement-ready security review, and a company-led path for teams that need rollout and continuity beyond Slack’s official/self-host MCP options.
+Give Claude your Slack. 20 self-hosted tools for channels, search, replies, reactions, unread triage, user search, and real-time notifications. This fork adds Claude Code channel notifications for push-style message delivery. Self-host free or use Slack MCP Cloud for Claude-first managed transport, Gemini CLI support, hosted credential handling, deployment review, procurement-ready security review, and a company-led path for teams that need rollout and continuity beyond Slack’s official/self-host MCP options.
 
 ## Verify & Proof
 
@@ -40,8 +40,12 @@ npx -y @jtalk22/slack-mcp@latest --status
 | `slack_add_reaction` | Add an emoji reaction to a message | **destructive** |
 | `slack_remove_reaction` | Remove an emoji reaction from a message | **destructive** |
 | `slack_conversations_mark` | Mark a conversation as read | **destructive** |
+| `slack_subscribe_notifications` | Subscribe to real-time channel notifications | idempotent |
+| `slack_unsubscribe_notifications` | Remove all notification subscriptions | idempotent |
+| `slack_get_queued_messages` | Retrieve accumulated messages from queue | read-only |
+| `slack_get_pipeline_metrics` | Notification pipeline health counters | read-only |
 
-All tools carry [MCP safety annotations](https://modelcontextprotocol.io/specification/2025-03-26/server/tools#annotations): 12 read-only (`readOnlyHint: true`), 4 write-path (`destructiveHint: true`). Only `slack_send_message` is non-idempotent.
+All tools carry [MCP safety annotations](https://modelcontextprotocol.io/specification/2025-03-26/server/tools#annotations): 14 read-only (`readOnlyHint: true`), 4 write-path (`destructiveHint: true`), 2 idempotent subscription controls. Only `slack_send_message` is non-idempotent.
 
 \* `slack_refresh_tokens` modifies local token file only — no external Slack state.
 
@@ -49,7 +53,7 @@ All tools carry [MCP safety annotations](https://modelcontextprotocol.io/specifi
 
 Slack MCP Cloud provides 15 managed tools with hosted credential handling. Team adds 3 AI compound workflows for summaries, action items, and decisions. Claude is the primary path; Gemini CLI is the second supported client path on the hosted endpoint.
 
-- Self-host if you want 16 tools, npm or Docker, and full operator control over runtime and tokens.
+- Self-host if you want 20 tools, npm or Docker, and full operator control over runtime and tokens.
 - Use Cloud if you want one remote endpoint, hosted credential handling, deployment review, buyer-facing security review, support, and a hosted account surface.
 - Slack now has an official MCP path. Use [Official vs Managed](https://mcp.revasserlabs.com/official-slack-mcp-vs-managed?utm_source=github&utm_medium=readme&utm_campaign=slack_mcp_cloud) when the decision is about transport ownership versus managed rollout, workflow packaging, and continuity.
 - Solo starts at `$19/mo`; Team is `$49/mo` and adds 3 AI workflows plus higher request capacity.
@@ -190,10 +194,51 @@ Details: [docs/DEPLOYMENT-MODES.md](docs/DEPLOYMENT-MODES.md)
 
 More: [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
 
+## Real-time Notifications (Claude Code)
+
+This fork adds optional real-time message notifications using Claude Code's channel protocol. Incoming Slack messages push as `<channel>` tags directly into the conversation — no polling required from the agent side.
+
+### Setup
+
+Start Claude Code with channel support enabled:
+
+```bash
+claude --dangerously-load-development-channels server:slack-mcp-server
+```
+
+Then have the agent subscribe:
+
+```
+Use slack_subscribe_notifications with dms: true
+```
+
+### How it works
+
+1. Agent calls `slack_subscribe_notifications` with filters (DMs, specific channels, all, mentions only)
+2. Server polls Slack at a configurable interval (default 5s, set `SLACK_MCP_POLL_INTERVAL_MS`)
+3. New messages push as metadata-only notifications (sender, channel, type — no message body for security)
+4. Agent calls `slack_get_queued_messages` to retrieve actual message content
+
+### Configuration
+
+| Env var | Default | Description |
+|---------|---------|-------------|
+| `SLACK_MCP_POLL_INTERVAL_MS` | `5000` | Polling interval in milliseconds |
+| `SLACK_MCP_DATA_DIR` | `~/.slack-mcp-data/` | Queue persistence directory |
+
+### Tools
+
+- `slack_subscribe_notifications` — subscribe to channels, DMs, mentions, or all messages
+- `slack_unsubscribe_notifications` — stop all notifications
+- `slack_get_queued_messages` — retrieve accumulated messages (marks as read)
+- `slack_get_pipeline_metrics` — notification pipeline health counters
+
+Silent channels can be added to queue messages without pushing notifications — useful for batch-checking on a schedule.
+
 ## Docs
 
 - [Setup Guide](docs/SETUP.md) — Token extraction and configuration
-- [API Reference](docs/API.md) — All 16 tools with parameters and examples
+- [API Reference](docs/API.md) — All 20 tools with parameters and examples
 - [Deployment Modes](docs/DEPLOYMENT-MODES.md) — stdio, web, hosted HTTP, Cloudflare Worker
 - [Use Case Recipes](docs/USE_CASE_RECIPES.md) — 12 copy-paste prompts
 - [Troubleshooting](docs/TROUBLESHOOTING.md) — Common issues and fixes
